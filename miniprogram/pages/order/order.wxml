@@ -11,10 +11,19 @@
   <van-datetime-picker
     type="datetime"
     value="{{ currentDate }}"
-    min-date="{{ minDate }}"
-    max-date="{{ maxDate }}"
+    min-hour="{{ minHour }}"
+    max-hour="{{ maxHour }}"
     bind:confirm="onDateConfirm"
     bind:cancel="onClose"
   />
 </van-popup>
-<van-button type="primary" round class="m8">预约</van-button>
+<van-button 
+  type="primary" 
+  round 
+  class="m8" 
+  bind:tap="onOrderHander" 
+  loading="{{saving}}"
+  loading-text="预约中..."
+  >
+  预约
+</van-button>

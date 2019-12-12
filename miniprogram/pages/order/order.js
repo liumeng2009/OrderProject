@@ -1,15 +1,17 @@
 // pages/order/order.js
 const moment = require('moment');
+const db = wx.cloud.database();
 Page({
   /**
    * 页面的初始数据
    */
   data: {
     show: false,
+    saving: false,
     minHour: 10,
     maxHour: 20,
-    minDate: new Date().getTime(),
-    maxDate: new Date().getTime() + 1000 * 60 * 60 * 24 *365,
+    minDate: new Date().getTime() + 1000 * 60 * 30,
+    maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
     currentDate: new Date().getTime(),
     currentDateStr: ''
   },
@@ -25,6 +27,32 @@ Page({
   },
   onClose() {
     this.setData({ show: false });
+  },
+  onOrderHander() {
+    this.setLoading(true);
+    db.collection('orders').add({
+      data: {
+        orderTime: moment(this.data.currentDate).toDate(),
+        status: 1
+      }
+    }).then(res => {
+      this.setLoading(false);
+      wx.showToast({
+        title: '预约成功.',
+      })
+    }).catch(err => {
+      console.log(err);
+      this.setLoading(false);
+      wx.showToast({
+        title: err.toString(),
+      })
+    })
+  },
+
+  setLoading(value) {
+    this.setData({
+      saving: value
+    });
   },
 
   /**
