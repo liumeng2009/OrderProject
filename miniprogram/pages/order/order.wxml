@@ -1,0 +1,20 @@
+<van-cell-group title="请填写预约时间">
+  <van-field
+    value="{{ currentDateStr }}"
+    label="预约时间"
+    icon="clock"
+    bind:tap="onDateClick"
+    size="large"
+  />
+</van-cell-group>
+<van-popup show="{{ show }}" bind:close="onClose" position="bottom">
+  <van-datetime-picker
+    type="datetime"
+    value="{{ currentDate }}"
+    min-date="{{ minDate }}"
+    max-date="{{ maxDate }}"
+    bind:confirm="onDateConfirm"
+    bind:cancel="onClose"
+  />
+</van-popup>
+<van-button type="primary" round class="m8">预约</van-button>
