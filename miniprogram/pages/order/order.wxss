@@ -5,3 +5,6 @@
 .m8 button{
   width:100%;
 }
+.van-field__input--disabled{
+  color: #07c160 !important;
+}

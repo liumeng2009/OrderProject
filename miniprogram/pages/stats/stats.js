@@ -1,18 +1,44 @@
-// pages/stats/stats.js
+const moment = require('moment');
+const db = wx.cloud.database();
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    orders: []
+  },
 
+  getOrders() {
+    db.collection('orders').orderBy('orderTime', 'desc').get()
+      .then(res => {
+        for(const r of res.data) {
+          //判断超期或者预约中
+          if (moment().diff(moment(r.orderTime)) < 0) {
+            r.status = '预约成功';
+          } else {
+            r.status = '预约已到期';
+          }
+          // 格式化
+          r.orderTime = moment(r.orderTime).format('YYYY-MM-DD HH:mm');
+        }
+        this.setData({
+          orders: res.data
+        })
+        console.log(this.data);
+      }).catch(err => {
+        wx.showToast({
+          title: err,
+        })
+      });
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    
   },
 
   /**
@@ -26,7 +52,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getOrders();
   },
 
   /**

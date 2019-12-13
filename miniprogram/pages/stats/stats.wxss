@@ -1,1 +1,24 @@
-/* pages/stats/stats.wxss */
+.profile{
+  background-color: #07c160;
+  height:400rpx;
+  text-align: center;
+  position: relative;
+  width: 100%;
+}
+.profile .avatar{
+  width: 200rpx;
+  height: 200rpx;
+  position: absolute;
+  top: 100rpx;
+  left: 50%;
+  margin-left: -100rpx;
+  border-radius: 50%;
+}
+.profile .username{
+  position: absolute;
+  color:#fff;
+  width:200rpx;
+  top: 300rpx;
+  left: 50%;
+  margin-left: -100rpx;
+}

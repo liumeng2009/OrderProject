@@ -13,7 +13,9 @@ Page({
     minDate: new Date().getTime() + 1000 * 60 * 30,
     maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
     currentDate: new Date().getTime(),
-    currentDateStr: ''
+    currentDateStr: '',
+    phone: null,
+    phoneErrorMessage: '',
   },
   onDateClick() {
     this.setData({ show: true });
@@ -25,14 +27,47 @@ Page({
       show: false,
     })
   },
+  checkPhone() {
+    const phoneReg = /^[1][3,4,5,7,8，9][0-9]{9}$/;
+    const forbidden = phoneReg.test(this.data.phone);
+    return forbidden;
+  },
   onClose() {
     this.setData({ show: false });
   },
+  onPhoneInput(value) {
+    if (this.data.phoneErrorMessage !== '') {
+      this.setData({
+        phoneErrorMessage: ''
+      });
+    }
+    return value;
+  },
+  onPhoneBlur(value) {
+    this.setData({
+      phone: value.detail.value,
+    });
+  },
   onOrderHander() {
+    console.log(this.data.phone);
+    if (!this.data.phone) {
+      this.setData({
+        phoneErrorMessage: '请输入电话号码...'
+      });
+      return false;
+    } else {
+      if (!this.checkPhone()) {
+        this.setData({
+          phoneErrorMessage: '电话号码格式错误...'
+        });
+        return false;
+      }
+    }
     this.setLoading(true);
     db.collection('orders').add({
       data: {
         orderTime: moment(this.data.currentDate).toDate(),
+        phone: this.data.phone,
         status: 1
       }
     }).then(res => {
