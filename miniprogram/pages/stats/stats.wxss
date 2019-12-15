@@ -1,3 +1,4 @@
+@import '../../style/common.wxss';
 .profile{
   background-color: #07c160;
   height:400rpx;
@@ -21,4 +22,14 @@
   top: 300rpx;
   left: 50%;
   margin-left: -100rpx;
+}
+.van-cell-text{
+  display: inline-block;
+}
+.avatar{
+  width:64rpx;
+  height:64rpx;
+}
+.username{
+  line-height: 78rpx;
 }

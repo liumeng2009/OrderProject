@@ -5,6 +5,7 @@
     "van-action-sheet": "vant-weapp/action-sheet",
     "van-field": "vant-weapp/field",
     "van-cell": "vant-weapp/cell",
-    "van-cell-group": "vant-weapp/cell-group"
+    "van-cell-group": "vant-weapp/cell-group",
+    "van-toast": "vant-weapp/toast"
   }
 }

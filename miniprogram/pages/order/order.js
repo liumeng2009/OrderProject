@@ -1,6 +1,7 @@
 // pages/order/order.js
 const moment = require('moment');
 const db = wx.cloud.database();
+import Toast from 'vant-weapp/toast/toast';
 Page({
   /**
    * 页面的初始数据
@@ -8,14 +9,13 @@ Page({
   data: {
     show: false,
     saving: false,
-    minHour: 10,
-    maxHour: 20,
     minDate: new Date().getTime() + 1000 * 60 * 30,
     maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
-    currentDate: new Date().getTime(),
+    currentDate: new Date().getTime() + 1000 * 60 * 30,
     currentDateStr: '',
     phone: null,
     phoneErrorMessage: '',
+    openid: '',
   },
   onDateClick() {
     this.setData({ show: true });
@@ -48,8 +48,8 @@ Page({
       phone: value.detail.value,
     });
   },
-  onOrderHander() {
-    console.log(this.data.phone);
+
+  onGotUserInfo(e) {
     if (!this.data.phone) {
       this.setData({
         phoneErrorMessage: '请输入电话号码...'
@@ -63,24 +63,53 @@ Page({
         return false;
       }
     }
+    if (this.openid === '') {
+      Toast('openid初始化失败');
+      return false;
+    }
+    // 时间不可以太晚，需要比现在早30分钟
+    if (moment(this.data.currentDate).diff(moment()) >= 0) {
+
+    } else {
+      Toast('请选择一个比现在更晚的时间.');
+      return false;
+    }
     this.setLoading(true);
-    db.collection('orders').add({
-      data: {
-        orderTime: moment(this.data.currentDate).toDate(),
-        phone: this.data.phone,
-        status: 1
+    const _ = db.command
+    // 检查这个用户是否有生效中的预约
+    console.log(this.data.openid);
+    console.log(moment().toDate());
+    db.collection('orders').where({
+      _openid: this.data.openid,
+      orderTime: _.gt(moment().toDate())
+    }).get().then(res => {
+      if (res.data.length > 0) {
+        // 说明有，不可以重复预约
+        Toast('您已经有预约了，不可以重复预约.');
+        this.setLoading(false);
+        return false;
+      } else {
+        // 如果没有其他预约，才可以新增
+        // 把当前用户存进数据库
+        db.collection('orders').add({
+          data: {
+            orderTime: moment(this.data.currentDate).toDate(),
+            phone: this.data.phone,
+            status: 1,
+            nickname: e.detail.userInfo.nickName,
+            avatar: e.detail.userInfo.avatarUrl,
+          }
+        }).then(res => {
+          this.setLoading(false);
+          Toast.success('预约成功');
+        }).catch(err => {
+          this.setLoading(false);
+          Toast(err.toString());
+        })
       }
-    }).then(res => {
-      this.setLoading(false);
-      wx.showToast({
-        title: '预约成功.',
-      })
     }).catch(err => {
-      console.log(err);
+      Taost(err.toString());
       this.setLoading(false);
-      wx.showToast({
-        title: err.toString(),
-      })
     })
   },
 
@@ -96,6 +125,16 @@ Page({
   onLoad: function (options) {
     this.setData({
       currentDateStr: moment(this.data.currentDate).format('YYYY年MM月DD日 hh:mm'),
+    });
+    wx.cloud.callFunction({
+      name: 'login'
+    }).then(res => {
+      const openid = res.result.openid;
+      this.setData({
+        openid: openid
+      })
+    }).catch(err => {
+      Toast(err.toString());
     });
   },
 

@@ -1,10 +1,4 @@
-/* pages/order/order.wxss */
-.m8{
-  margin: 8px;
-}
-.m8 button{
-  width:100%;
-}
+@import '../../style/common.wxss';
 .van-field__input--disabled{
   color: #07c160 !important;
 }

@@ -1,21 +1,68 @@
-<view class="profile">
-  <view class="avatar">
-    <open-data type="userAvatarUrl"></open-data>
-  </view>
-  <view class="username">
-    <open-data type="userNickName"></open-data>
-  </view>
-</view>
-<view>
-  <van-cell-group title="预约">
-    <block wx:for="{{orders}}" ws:key="idx" wx:for-index="index" wx:for-item="item">
-      <van-cell>
-        <view>
-          <view class="van-cell-text">{{item.orderTime}}</view>
-          <van-tag type="danger">{{item.status}}</van-tag>
-        </view>
-      </van-cell>
-    </block>
-  </van-cell-group>
-</view>
+<van-tabs color="#07c160">
+  <van-tab title="预约">
+    <view>
+      <view style="text-align:center;padding: 8px 0px;" wx:if="{{ showLoading }}">
+        <van-loading type="spinner" color="#1989fa" />
+      </view>
+      <van-cell-group title="预约">
+        <block wx:for="{{orders}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
+          <van-cell>
+            <view slot="title">
+              <van-row>
+                <van-col span="4">
+                  <image src="{{item.avatar}}" class="avatar"></image>
+                </van-col>
+                <van-col span="8">
+                  <view class="username">{{item.nickname}}</view>
+                </van-col>
+                <van-col span="12">
+                  <view class="username">{{item.orderTime}}</view>
+                </van-col>
+              </van-row>
+            </view>
+            <van-tag slot="right-icon" type="success" wx:if="{{item.status === 1}}">成功</van-tag>
+            <van-tag slot="right-icon" type="warning" wx:if="{{item.status === 2}}">超期</van-tag>
+          </van-cell>
+        </block>
+      </van-cell-group>
+    </view>
+  </van-tab>
+  <van-tab title="用户管理" wx:if="{{isAdmin}}">
+      <van-cell-group title="用户列表">
+        <block wx:for="{{users}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
+          <van-cell>
+            <view slot="title">
+              <van-row>
+                <van-col span="4">
+                  <image src="{{item.avatar}}" class="avatar"></image>
+                </van-col>
+                <van-col span="20">
+                  <view class="username">{{item.nickname}}</view>
+                </van-col>
+              </van-row>
+            </view>
+            <van-checkbox slot="right-icon" style="padding: 20rpx 0rpx" bind:change="onIsAdminChange" data-userid="{{item._id}}" value="{{ item.isAdmin }}"></van-checkbox>
+          </van-cell>
+        </block>
+      </van-cell-group>
+  </van-tab>
+  <van-tab title="管理员申请" wx:if="{{!isAdmin}}">
+    <view style="height:400rpx">
+      <van-button round style="position:relative;top:200rpx;left:200rpx" 
+        type="primary"
+        open-type="getUserInfo"
+        bindgetuserinfo="onGotUserInfo"
+        wx:if="{{userInDb}}"
+        disabled
+        >申请成为管理员</van-button>
+      <van-button round style="position:relative;top:200rpx;left:200rpx" 
+        type="primary"
+        open-type="getUserInfo"
+        bindgetuserinfo="onGotUserInfo"
+        wx:if="{{!userInDb}}"
+        >申请成为管理员</van-button>
+    </view>
+  </van-tab>
+</van-tabs>
+<van-toast id="van-toast" />
 
