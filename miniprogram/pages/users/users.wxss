@@ -1,0 +1,10 @@
+.van-cell-text{
+  display: inline-block;
+}
+.avatar{
+  width:64rpx;
+  height:64rpx;
+}
+.username{
+  line-height: 78rpx;
+}

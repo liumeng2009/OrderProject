@@ -11,72 +11,82 @@ exports.main = async (event, context) => {
   const _checked = event.checked;
   // openid
   const _docid = event.docid;
+  console.log(_docid);
+  console.log(_checked);
   try {
-    if (!e.detail) {
-      // 置否
-      db.collection('users').where({
-        _id: _docid
-      }).limit(1).get().then(res => {
-        if (res.data.length > 0) {
-          if (res.data[0].isManager) {
-            // 是初始用户的话
+    const userResult = await db.collection('users').where({
+      _id: _docid
+    }).limit(1).get();
+    if (userResult && userResult.data.length > 0) {
+      // 用户存在
+      if (!_checked) { 
+        if (userResult.data[0].isManager) {
+          return {
+            code: 1,
+            message: '该管理员不可被删除管理员身份.'
+          };
+        } else {
+          // 置否
+          // 不是的话，可以删除管理员身份了
+          console.log('开始删除');
+          const rel = await db.collection('users').doc(_docid).update({
+            data: {
+              isAdmin: false,
+            }
+          });
+          if (rel && rel.stats && rel.stats.updated && rel.stats.updated === 1) {
             return {
-              code:1,
-              message: '该管理员不可被删除管理员身份.'
+              code: 0,
+              message: '删除管理员身份成功.',
+              result: {
+                isAdmin: false,
+                id: _docid
+              }
             };
           } else {
-            // 不是的话，可以删除管理员身份了
-            db.collection('users').doc(_docid).update({
-              data: {
-                isAdmin: false,
-              }
-            }).then(res => {
-              return {
-                code: 0,
-                message: '删除管理员身份成功.'
-              };
-            }).catch(err => {
-              return {
-                code: 1,
-                message: '数据库操作失败.'
-              };
-            });
+            return {
+              code: 1,
+              message: '删除管理员身份失败.'
+            };
           }
+        }
+      } else {
+        // 置true
+        console.log('开始新增');
+        // 置为真
+        const rel = await db.collection('users').doc(_docid).update({
+          data: {
+            isAdmin: true,
+          }
+        });
+        if (rel && rel.stats && rel.stats.updated && rel.stats.updated === 1) {
+          return {
+            code: 0,
+            message: '置为管理员身份成功.',
+            result: {
+              isAdmin: true,
+              id: _docid
+            }
+          };
         } else {
           return {
             code: 1,
-            message: '该用户不存在.'
+            message: '置为管理员身份失败.'
           };
         }
+      }
 
-      }).catch(err => {
-        return {
-          code: 1,
-          message: '数据库操作失败.'
-        };
-      });
     } else {
-      // 置为真
-      db.collection('users').doc(_docid).update({
-        data: {
-          isAdmin: true,
-        }
-      }).then(res => {
-        return {
-          code: 0,
-          message: '置为管理员身份成功.'
-        };
-      }).catch(err => {
-        return {
-          code: 1,
-          message: '操作数据库失败.'
-        };
-      });
+      return {
+        code: 1,
+        message: '该用户不存在.'
+      };
     }
-  } catch (e) {
+  }catch(err) {
+    console.log(err);
     return {
       code: 1,
-      message: '服务器内部异常.'
+      message: err.toString()
     };
   }
 }

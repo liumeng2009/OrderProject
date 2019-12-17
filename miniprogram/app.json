@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/order/order",
-    "pages/stats/stats"
+    "pages/stats/stats",
+    "pages/users/users"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

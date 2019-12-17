@@ -41,4 +41,13 @@
   >
   预约
 </van-button>
+<van-button 
+  wx:if="{{isAdmin}}"
+  type="primary" 
+  round 
+  class="m8"
+  bind:tap="onUserManageClick"
+  >
+  用户管理
+</van-button>
 <van-toast id="van-toast" />

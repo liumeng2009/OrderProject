@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
       openid: _openId
     }).limit(1).get();
   }catch(e){
-    consoole.log(e);
+    console.log(e);
   }
 
 }
