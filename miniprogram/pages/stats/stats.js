@@ -57,7 +57,7 @@ Page({
     } else {
       db.collection('orders').aggregate()
         .match({
-          openid: this.data.openid
+          _openid: this.data.openid
         })
         .project({
           orderTime: $.dateToString({
@@ -183,6 +183,13 @@ Page({
     newUser.isAdmin = false;
     this.setData({
       users: [newUser]
+    });
+    wx.cloud.callFunction({
+      name: 'setUserAdmin',
+      data: {
+        checked: e.detail,
+        docid: e.target.dataset.userid
+      }
     });
     if (!e.detail) {
       // 置否
