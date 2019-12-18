@@ -16,7 +16,7 @@ Page({
     phone: null,
     phoneErrorMessage: '',
     openid: '',
-    isAdmin: false
+    isManager: false
   },
   onDateClick() {
     this.setData({ show: true });
@@ -178,9 +178,9 @@ Page({
           openid: openid
         }
       }).then(res => {
-        if (res.result.data.length > 0 && res.result.data[0].isAdmin) {
+        if (res.result.data.length > 0 && res.result.data[0].isManager) {
           this.setData({
-            isAdmin: true
+            isManager: true
           });
         }
       }).catch(err => {

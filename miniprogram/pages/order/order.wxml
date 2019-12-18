@@ -42,7 +42,7 @@
   预约
 </van-button>
 <van-button 
-  wx:if="{{isAdmin}}"
+  wx:if="{{isManager}}"
   type="primary" 
   round 
   class="m8"
