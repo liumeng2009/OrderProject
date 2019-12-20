@@ -8,6 +8,7 @@ Page({
    */
   data: {
     show: false,
+    showSetting: false,
     saving: false,
     minDate: new Date().getTime() + 1000 * 60 * 30,
     maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
@@ -16,7 +17,20 @@ Page({
     phone: null,
     phoneErrorMessage: '',
     openid: '',
-    isManager: false
+    isAdmin: false,
+    actions: [
+      { name: '预约管理', id: 0 }
+    ],
+    formatter(type, value) {
+      if (type === 'year') {
+        return `${value}年`;
+      } else if (type === 'month') {
+        return `${value}月`;
+      } else if (type === 'day') {
+        return `${value}日`;
+      }
+      return value;
+    }
   },
   onDateClick() {
     this.setData({ show: true });
@@ -24,7 +38,7 @@ Page({
   onDateConfirm(value) {
     this.setData({
       currentDate: value.detail,
-      currentDateStr: moment(value.detail).format('YYYY年MM月DD日 hh:mm'),
+      currentDateStr: moment(value.detail).format('YYYY年MM月DD日'),
       show: false,
     })
   },
@@ -35,6 +49,9 @@ Page({
   },
   onClose() {
     this.setData({ show: false });
+  },
+  onSettingClose() {
+    this.setData({ showSetting: false });
   },
   onPhoneInput(value) {
     if (this.data.phoneErrorMessage !== '') {
@@ -155,10 +172,25 @@ Page({
       saving: value
     });
   },
-  onUserManageClick() {
-    wx.navigateTo({
-      url: '../users/users',
-    })
+  onSettingClick() {
+    this.setData({
+      showSetting: true,
+    });
+  },
+  onActionSelected(e) {
+    const actionid = e.detail.id;
+    switch(actionid){
+      case 0:
+      this.setData({
+        showSetting: false,
+      });
+        wx.navigateTo({
+          url: '../orderManage/orderManage',
+        });
+        break;
+      default:
+        Toast('不存在该菜单')
+    }
   },
 
   /**
@@ -166,7 +198,7 @@ Page({
    */
   onLoad: function (options) {
     this.setData({
-      currentDateStr: moment(this.data.currentDate).format('YYYY年MM月DD日 hh:mm'),
+      currentDateStr: moment(this.data.currentDate).format('YYYY年MM月DD日'),
     });
     wx.cloud.callFunction({
       name: 'login'
@@ -178,9 +210,9 @@ Page({
           openid: openid
         }
       }).then(res => {
-        if (res.result.data.length > 0 && res.result.data[0].isManager) {
+        if (res.result.data.length > 0 && res.result.data[0].isAdmin) {
           this.setData({
-            isManager: true
+            isAdmin: true
           });
         }
       }).catch(err => {

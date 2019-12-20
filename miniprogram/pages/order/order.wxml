@@ -1,35 +1,24 @@
-<van-cell-group title="请填写预约时间">
+<van-cell-group title="请选择日期">
   <van-field
     value="{{ currentDateStr }}"
-    required
     label="预约时间"
-    icon="clock"
+    icon="calender-o"
     bind:tap="onDateClick"
     size="large"
     disabled
   />
-  <van-field
-    value="{{ phone }}"
-    required
-    label="手机号"
-    placeholder="请输入手机号"
-    error-message="{{phoneErrorMessage}}"
-    size="large"
-    icon="phone"
-    bind:blur="onPhoneBlur"
-    bind:input="onPhoneInput"
-  />
 </van-cell-group>
 <van-action-sheet show="{{ show }}" bind:close="onClose">
   <van-datetime-picker
-    type="datetime"
+    type="date"
     value="{{ currentDate }}"
     min-date="{{ minDate }}"
     max-date="{{ maxDate }}"
-    bind:confirm="onDateConfirm"
+    formatter="{{ formatter }}"
     bind:cancel="onClose"
   />
 </van-action-sheet>
+<!-->
 <van-button 
   type="primary" 
   round 
@@ -40,14 +29,20 @@
   bindgetuserinfo="onGotUserInfo"
   >
   预约
-</van-button>
+</van-button>-->
 <van-button 
-  wx:if="{{isManager}}"
-  type="primary" 
-  round 
-  class="m8"
-  bind:tap="onUserManageClick"
+  wx:if="{{isAdmin}}"
+  icon="setting-o" type="primary" 
+  class="float-button"
+  bind:tap="onSettingClick"
   >
-  用户管理
 </van-button>
+<van-action-sheet 
+  show="{{ showSetting }}"
+  actions="{{actions}}"
+  class="custom-action-option"
+  title="管理员功能列表"
+  bind:select="onActionSelected"
+  bind:close="onSettingClose"
+   />
 <van-toast id="van-toast" />

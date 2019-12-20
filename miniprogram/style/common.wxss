@@ -1,5 +1,5 @@
 .m8{
-  margin: 8px;
+  margin: 16rpx;
 }
 .m8 button{
   width:100%;

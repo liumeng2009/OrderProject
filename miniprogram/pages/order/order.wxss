@@ -2,3 +2,15 @@
 .van-field__input--disabled{
   color: #07c160 !important;
 }
+.float-button{
+  position:fixed;
+  bottom: 16rpx;
+  left: 16rpx;
+}
+.float-button button{
+  width:auto !important;
+}
+.custom-action-option button{
+  padding: 0px;
+  font-weight: normal;
+}
