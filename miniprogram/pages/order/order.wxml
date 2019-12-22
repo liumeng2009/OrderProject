@@ -8,6 +8,21 @@
     disabled
   />
 </van-cell-group>
+
+<van-cell-group title="请选择时间段" class="order-list">
+  <van-cell wx:for="{{orders}}" wx:key="id" wx:for-index="index" wx:for-item="item" bind:click="onClick" 
+    data-id="{{item.id}}"
+    data-start="{{item.start}}"
+    data-end="{{item.end}}"
+    >
+    <view slot="title">{{item.start}} - {{item.end}}</view>
+    <block wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
+      <van-icon wx:if="{{itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager" color="#07c160" />
+      <van-icon wx:if="{{!itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
+    </block>
+  </van-cell>
+</van-cell-group>
+
 <van-action-sheet show="{{ show }}" bind:close="onClose">
   <van-datetime-picker
     type="date"
@@ -16,33 +31,14 @@
     max-date="{{ maxDate }}"
     formatter="{{ formatter }}"
     bind:cancel="onClose"
+    bind:confirm="onDateConfirm"
   />
 </van-action-sheet>
-<!-->
-<van-button 
-  type="primary" 
-  round 
-  class="m8"
-  loading="{{saving}}"
-  loading-text="预约中..."
-  open-type="getUserInfo"
-  bindgetuserinfo="onGotUserInfo"
-  >
-  预约
-</van-button>-->
 <van-button 
   wx:if="{{isAdmin}}"
-  icon="setting-o" type="primary" 
+  icon="orders-o" type="primary" 
   class="float-button"
   bind:tap="onSettingClick"
   >
 </van-button>
-<van-action-sheet 
-  show="{{ showSetting }}"
-  actions="{{actions}}"
-  class="custom-action-option"
-  title="管理员功能列表"
-  bind:select="onActionSelected"
-  bind:close="onSettingClose"
-   />
 <van-toast id="van-toast" />

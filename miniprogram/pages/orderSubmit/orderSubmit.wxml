@@ -1,0 +1,34 @@
+<van-cell-group title="{{formTitle}}">
+  <van-field
+    value="{{ username }}"
+    required
+    clearable
+    label="姓名"
+    icon="user-o"
+    placeholder="请输入用户"
+    error-message="{{userNameErrorMessage}}"
+    bind:input="onUsernameInput"
+    bind:blur="onUsernameBlur"
+  />
+  <van-field
+    value="{{ phone }}"
+    required
+    icon="phone-o"
+    label="电话"
+    placeholder="请输入电话号码"
+    error-message="{{phoneErrorMessage}}"
+    bind:input="onPhoneInput"
+    bind:blur="onPhoneBlur"
+  />
+</van-cell-group>
+<van-button 
+  class="m8"
+  type="primary" 
+  round
+  open-type="getUserInfo"
+  bindgetuserinfo="getUserInfo"
+  loading="{{saving}}"
+  >
+  预约
+</van-button>
+<van-toast id="van-toast" />

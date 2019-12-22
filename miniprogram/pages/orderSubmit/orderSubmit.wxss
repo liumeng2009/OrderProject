@@ -1,0 +1,2 @@
+/* pages/orderSubmit/orderSubmit.wxss */
+@import '../../style/common.wxss';

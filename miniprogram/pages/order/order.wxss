@@ -1,4 +1,3 @@
-@import '../../style/common.wxss';
 .van-field__input--disabled{
   color: #07c160 !important;
 }
@@ -10,7 +9,20 @@
 .float-button button{
   width:auto !important;
 }
-.custom-action-option button{
-  padding: 0px;
-  font-weight: normal;
+.m-r-8{
+  margin-right:8rpx;
+}
+.f-s-20{
+  font-size: 40rpx;
+}
+.green{
+  color:#07c160;
+}
+.order-list van-cell{
+  margin: 8rpx;
+  float:left;
+  width:100%;
+}
+.order-list van-cell:first-child{
+  margin-top: 0rpx;
 }

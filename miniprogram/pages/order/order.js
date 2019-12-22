@@ -8,19 +8,12 @@ Page({
    */
   data: {
     show: false,
-    showSetting: false,
-    saving: false,
     minDate: new Date().getTime() + 1000 * 60 * 30,
     maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
     currentDate: new Date().getTime() + 1000 * 60 * 30,
     currentDateStr: '',
-    phone: null,
-    phoneErrorMessage: '',
     openid: '',
     isAdmin: false,
-    actions: [
-      { name: '预约管理', id: 0 }
-    ],
     formatter(type, value) {
       if (type === 'year') {
         return `${value}年`;
@@ -30,7 +23,38 @@ Page({
         return `${value}日`;
       }
       return value;
-    }
+    },
+    nullOrders: [
+      {
+        id: 0,
+        start: '8:00',
+        end: '8:45',
+        seatCount: 0,
+        seats: [{}, {}, {}, {}]
+      },
+      {
+        id: 1,
+        start: '8:45',
+        end: '9:30',
+        seatCount: 0,
+        seats: [{}, {}, {}, {}]
+      },
+      {
+        id: 2,
+        start: '9:30',
+        end: '10:15',
+        seatCount: 0,
+        seats: [{}, {}, {}, {}]
+      },
+      {
+        id: 3,
+        start: '10:15',
+        end: '11:00',
+        seatCount: 0,
+        seats: [{}, {}, {}, {}]
+      }
+    ],
+    orders: []
   },
   onDateClick() {
     this.setData({ show: true });
@@ -41,158 +65,72 @@ Page({
       currentDateStr: moment(value.detail).format('YYYY年MM月DD日'),
       show: false,
     })
+    this.getTimeQuantum();
   },
-  checkPhone() {
-    const phoneReg = /^[1][3,4,5,7,8，9][0-9]{9}$/;
-    const forbidden = phoneReg.test(this.data.phone);
-    return forbidden;
-  },
-  onClose() {
-    this.setData({ show: false });
-  },
-  onSettingClose() {
-    this.setData({ showSetting: false });
-  },
-  onPhoneInput(value) {
-    if (this.data.phoneErrorMessage !== '') {
-      this.setData({
-        phoneErrorMessage: ''
-      });
-    }
-    return value;
-  },
-  onPhoneBlur(value) {
+  // 绑定时段列表
+  getTimeQuantum() {
+    // 重新初始化
+    let assOrder = JSON.parse(JSON.stringify(this.data.nullOrders));
     this.setData({
-      phone: value.detail.value,
+      orders: assOrder
     });
-  },
-
-  onGotUserInfo(e) {
-    if (this.openid === '') {
-      Toast('openid初始化失败');
-      return false;
-    }
-    if (!this.data.phone) {
-      this.setData({
-        phoneErrorMessage: '请输入电话号码...'
-      });
-      return false;
-    } else {
-      if (!this.checkPhone()) {
-        if (this.data.phone.toString() === '10000'){
-          // 约定，这样输入的用户，想成为管理员，把他存入users表
-          wx.cloud.callFunction({
-            name: 'isUserExistInDB',
-            data: {
-              openid: this.data.openid
-            }
-          }).then(res => {
-            if (res.result.data.length > 0) {
-              // 已经存在
-              Toast('您已经申请成为管理员了.');
-            } else {
-              // 不存在，需要新增users信息
-              db.collection('users').add({
-                data: {
-                  openid: this.data.openid,
-                  nickname: e.detail.userInfo.nickName,
-                  avatar: e.detail.userInfo.avatarUrl,
-                  isAdmin: false,
-                }
-              }).then(res => {
-                Toast('申请成功，请等待管理员审核.');
-              }).catch(err => {
-                Toast(err.toString());
-              })
-            }
-          }).catch(err => {
-            Toast(err.toString());
-          })
-
-        } else {
-          this.setData({
-            phoneErrorMessage: '电话号码格式错误...'
-          });
-          return false;
-        }
-      }
-    }
-
-    // 时间不可以太晚，需要比现在早30分钟
-    if (moment(this.data.currentDate).diff(moment()) >= 0) {
-
-    } else {
-      Toast('请选择一个比现在更晚的时间.');
-      return false;
-    }
-    this.setLoading(true);
-    const _ = db.command
-    // 检查这个用户是否有生效中的预约
-    console.log(this.data.openid);
-    console.log(moment().toDate());
+    // 有没有这一天的order信息，没有的话，绑定一个空列表，有的话绑定
+    const dateSelectStr = moment(this.data.currentDate).format('YYYY-MM-DD');
     db.collection('orders').where({
-      _openid: this.data.openid,
-      orderTime: _.gt(moment().toDate())
+      date: dateSelectStr
     }).get().then(res => {
-      if (res.data.length > 0) {
-        // 说明有，不可以重复预约
-        Toast('您已经有预约了，不可以重复预约.');
-        this.setLoading(false);
-        return false;
-      } else {
-        // 如果没有其他预约，才可以新增
-        // 把当前用户存进数据库
-        db.collection('orders').add({
-          data: {
-            orderTime: moment(this.data.currentDate).toDate(),
-            phone: this.data.phone,
-            status: 1,
-            nickname: e.detail.userInfo.nickName,
-            avatar: e.detail.userInfo.avatarUrl,
+      console.log(res);
+      if (res && res.data && res.data.length > 0) {
+        // 说明有这一天的数据
+        const newOrder = [];
+        Object.assign(newOrder, this.data.orders);
+        // 将结果存入
+        for(const d of res.data) {
+          const order = newOrder.filter(o => o.start === d.start && o.end === d.end);
+          if (order.length > 0){
+            order[0].seatCount = d.seats.length;
+            for(let index = 0; index < d.seats.length ; index ++) {
+              order[0].seats[index].hasPeople = true;
+            }
           }
-        }).then(res => {
-          this.setLoading(false);
-          Toast.success('预约成功');
-          this.setData({
-            phone: null
-          });
-        }).catch(err => {
-          this.setLoading(false);
-          Toast(err.toString());
-        })
+        }
+        console.log(newOrder);
+        console.log(this.data);
+        this.setData({
+          orders: newOrder
+        });
       }
     }).catch(err => {
-      Taost(err.toString());
-      this.setLoading(false);
+      Toast(err.toString());
+    });
+  },
+  onClick(e) {
+    const id = e.target.dataset.id;
+    const start = e.target.dataset.start;
+    const end = e.target.dataset.end;
+    wx.navigateTo({
+      url: '../orderSubmit/orderSubmit',
+      success: res => {
+        // 通过eventChannel向被打开页面传送数据
+        res.eventChannel.emit('acceptDataFromOpenerPage', {
+          date: this.data.currentDate,
+          id: id,
+          start: start,
+          end: end
+        })
+      }
     })
   },
 
-  setLoading(value) {
-    this.setData({
-      saving: value
-    });
-  },
-  onSettingClick() {
-    this.setData({
-      showSetting: true,
-    });
-  },
-  onActionSelected(e) {
-    const actionid = e.detail.id;
-    switch(actionid){
-      case 0:
-      this.setData({
-        showSetting: false,
-      });
-        wx.navigateTo({
-          url: '../orderManage/orderManage',
-        });
-        break;
-      default:
-        Toast('不存在该菜单')
-    }
+  onClose() {
+    this.setData({ show: false });
   },
 
+  onSettingClick() {
+    wx.navigateTo({
+      url: '../orderManage/orderManage',
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -237,7 +175,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    this.getTimeQuantum();
   },
 
   /**

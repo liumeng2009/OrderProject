@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/order/order",
+    "pages/orderSubmit/orderSubmit",
     "pages/stats/stats",
     "pages/orderManage/orderManage"
   ],
