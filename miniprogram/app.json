@@ -13,7 +13,6 @@
     "navigationBarTextStyle": "white"
   },
   "sitemapLocation": "sitemap.json",
-  "style": "v2",
   "tabBar": {
     "list": [{
       "pagePath": "pages/order/order",

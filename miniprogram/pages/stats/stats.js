@@ -3,100 +3,30 @@ const db = wx.cloud.database();
 import Toast from 'vant-weapp/toast/toast';
 import Dialog from 'vant-weapp/dialog/dialog';
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
     orders: [],
-    isAdmin: false,
-    openid: '',
-    hasOpenid: false,
-    userInDb: false
+    openid: ''
   },
   getOrders() {
     Toast.loading({
       mask: true,
-      message: '加载预约列表中.'
+      message: '加载中.'
     });
-    const $ = db.command.aggregate
-    if (this.data.isAdmin) {
-      // 是管理员，能看到全部的order
-      db.collection('orders').aggregate()
-        .match({
-          status: 1
-        })
-        .project({
-          avatar: 1,
-          nickname: 1,
-          phone: 1,
-          _openid: 1,
-          orderTime: $.dateToString({
-            date: '$orderTime',
-            format: '%Y-%m-%d %H:%M',
-            timezone: 'Asia/Shanghai'
-          })
-        }).sort({
-          orderTime: -1,
-        }).end()
-        .then(res => {
-          console.log(res);
-          Toast.clear();
-          wx.stopPullDownRefresh();
-          for (const r of res.list) {
-            if (moment(r.orderTime).diff(moment()) > 0) {
-              r.status = 1;
-            } else {
-              r.status = 2;
-            }
-          }
-          this.setData({
-            orders: res.list
-          });
-        }).catch(err => {
-          Toast.clear();
-          wx.stopPullDownRefresh();
-          Toast(err.toString());
-        });
-    } else {
-      db.collection('orders').aggregate()
-        .match({
-          _openid: this.data.openid,
-          status: 1,
-        })
-        .project({
-          avatar: 1,
-          nickname: 1,
-          phone: 1,
-          _openid: 1,
-          orderTime: $.dateToString({
-            date: '$orderTime',
-            format: '%Y-%m-%d %H:%M',
-            timezone: 'Asia/Shanghai'
-          })
-        }).sort({
-          orderTime: -1,
-        }).end()
-        .then(res => {
-          console.log(res);
-          Toast.clear();
-          wx.stopPullDownRefresh();
-          for (const r of res.list) {
-            if (moment(r.orderTime).diff(moment()) > 0) {
-              r.status = 1;
-            } else {
-              r.status = 2;
-            }
-          }
-          this.setData({
-            orders: res.list
-          });
-        }).catch(err => {
-          Toast.clear();
-          wx.stopPullDownRefresh();
-          Toast(err.toString());
-        });
-    }
+    db.collection('orders').where({
+      'seats.openid': this.data.openid
+    }).get()
+    .then(res => {
+      console.log(res);
+      Toast.clear();
+      wx.stopPullDownRefresh();
+      this.setData({
+        orders: res.data
+      });
+    }).catch(err => {
+      Toast.clear();
+      wx.stopPullDownRefresh();
+      Toast(err.toString());
+    });
   },
   initLogin() {
     wx.cloud.callFunction({
@@ -104,36 +34,9 @@ Page({
     }).then(res => {
       const openid = res.result.openid;
       this.setData({
-        openid: openid,
-        hasOpenid: true,
+        openid: openid
       });
-      // 查找是否存进了数据库
-      const isExist = wx.cloud.callFunction({
-        name: 'isUserExistInDB',
-        data: {
-          openid: openid
-        }
-      }).then(res => {
-        if (res.result.data.length > 0) {
-          this.setData({
-            userInDb: true
-          });
-          const userInDb = res.result.data[0];
-          if (userInDb.isAdmin) {
-            // 说明是管理员
-            this.setData({
-              isAdmin: true
-            });
-          }
-          // 存在
-        } else {
-
-        }
-        // 获得orders列表,这时候已经知道当前用户是否是管理员了
-        this.getOrders();
-      }).catch(err => {
-        Toast(err.toString());
-      });
+      this.getOrders();
     }).catch(err => {
       Toast(err.toString());
     })
@@ -144,14 +47,17 @@ Page({
       message: '您确定要取消这条预约信息吗？',
       asyncClose: true
     }).then(() => {
-      db.collection('orders').doc(id).update({
+      wx.cloud.callFunction({
+        name: 'deleteFromOrders',
         data: {
-          status: 0
+          openid: this.data.openid,
+          orderid: id
         }
       }).then(res => {
         console.log(res);
-        if (res.stats && res.stats.updated && res.stats.updated === 1) {
-          // 删除成功
+        if (res && res.result && res.result.stats 
+          && res.result.stats.updated === 1)
+        {
           const newOrderList = [];
           Object.assign(newOrderList, this.data.orders);
           let i = 0;
@@ -168,10 +74,12 @@ Page({
         }
         Dialog.close();
       }).catch(err => {
+        console.log(err);
         Dialog.close();
         Toast(err.toString());
       })
-    }).catch(() => {
+    }).catch((err) => {
+      Toast(err.toString());
       Dialog.close();
     });
   },

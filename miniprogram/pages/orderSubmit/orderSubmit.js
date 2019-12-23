@@ -124,6 +124,7 @@ Page({
           wx.cloud.callFunction({
             name: 'insertIntoOrders',
             data: {
+              openid: this.data.openid,
               date: moment(this.data.date).format('YYYY-MM-DD'),
               start: this.data.start,
               end: this.data.end,
@@ -141,6 +142,11 @@ Page({
             if (res && res.result && res.result.stats){
               if (res.result.stats.updated === 1) {
                 Toast('预约成功')
+                setTimeout(() => {
+                  wx.navigateBack({
+                    delta: 1
+                  })
+                }, 500);
               } else if (res.result.stats.updated === 0){
                 // 返回成功，但是updated=0 认为成位置满了
                 Toast('该时段已经满员，请您选择其他时段.')

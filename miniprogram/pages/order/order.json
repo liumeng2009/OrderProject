@@ -1,4 +1,5 @@
 {
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "van-button": "vant-weapp/button",
     "van-datetime-picker": "vant-weapp/datetime-picker",

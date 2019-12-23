@@ -80,6 +80,7 @@ Page({
       date: dateSelectStr
     }).get().then(res => {
       console.log(res);
+      wx.stopPullDownRefresh();
       if (res && res.data && res.data.length > 0) {
         // 说明有这一天的数据
         const newOrder = [];
@@ -101,6 +102,7 @@ Page({
         });
       }
     }).catch(err => {
+      wx.stopPullDownRefresh();
       Toast(err.toString());
     });
   },
@@ -196,7 +198,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.getTimeQuantum();
   },
 
   /**

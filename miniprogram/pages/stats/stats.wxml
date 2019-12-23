@@ -2,21 +2,10 @@
   <block wx:for="{{orders}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
     <van-cell>
       <view slot="title">
-        <van-row>
-          <van-col span="4">
-            <image src="{{item.avatar}}" class="avatar"></image>
-          </van-col>
-          <van-col span="8">
-            <view class="username">{{item.nickname}}</view>
-          </van-col>
-          <van-col span="12">
-            <view class="username">{{item.orderTime}}</view>
-          </van-col>
-        </van-row>
+        {{item.date}} {{item.start}} - {{item.end}} 时段
       </view>
-      <van-tag slot="icon" style="padding:10rpx 16rpx 10rpx 0rpx;" type="success" wx:if="{{item.status === 1}}">成功</van-tag>
-      <van-tag slot="icon" style="padding:10rpx 16rpx 10rpx 0rpx;"  type="warning" wx:if="{{item.status === 2}}">超期</van-tag>
-      <van-tag wx:if="{{ openid === item._openid }}" slot="right-icon" style="padding:10rpx 0rpx;" type="danger" bind:tap="deleteOrder" data-id="{{item._id}}">
+      <van-tag slot="right-icon" type="danger" bind:tap="deleteOrder" 
+        data-id="{{item._id}}">
         取消
       </van-tag>
     </van-cell>
