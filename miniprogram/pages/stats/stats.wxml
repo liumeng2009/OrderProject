@@ -5,7 +5,8 @@
         {{item.date}} {{item.start}} - {{item.end}} 时段
       </view>
       <van-tag slot="right-icon" type="danger" bind:tap="deleteOrder" 
-        data-id="{{item._id}}">
+        data-id="{{item._id}}" data-date="{{item.date}}" 
+        data-start="{{item.start}}" data-end="{{item.end}}" >
         取消
       </van-tag>
     </van-cell>

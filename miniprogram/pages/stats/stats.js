@@ -43,6 +43,18 @@ Page({
   },
   deleteOrder(e) {
     const id = e.target.dataset.id;
+    const date = e.target.dataset.date;
+    const start = e.target.dataset.start;
+    const end = e.target.dataset.end;
+    // 取消，必须提前两小时
+    const startTime = moment(moment(date).format('YYYY-MM-DD')
+      + ' ' + start + ':00+8:00', "YYYY-MM-DD HH:mm:ss Z");
+    if (startTime.diff(moment()) < 1000 * 60 * 60 * 2){
+      // 小于两小时
+      Toast('抱歉，取消预约需提前两小时进行.');
+      return false;
+    }
+
     Dialog.confirm({
       message: '您确定要取消这条预约信息吗？',
       asyncClose: true
@@ -58,6 +70,7 @@ Page({
         if (res && res.result && res.result.stats 
           && res.result.stats.updated === 1)
         {
+          Toast('取消预约成功.');
           const newOrderList = [];
           Object.assign(newOrderList, this.data.orders);
           let i = 0;
@@ -79,7 +92,6 @@ Page({
         Toast(err.toString());
       })
     }).catch((err) => {
-      Toast(err.toString());
       Dialog.close();
     });
   },
