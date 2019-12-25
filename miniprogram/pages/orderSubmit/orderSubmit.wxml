@@ -20,7 +20,22 @@
     bind:input="onPhoneInput"
     bind:blur="onPhoneBlur"
   />
+  <van-field
+    value="{{ currentSex }}"
+    label="性别"
+    bind:tap="onSexClick"
+    size="large"
+    disabled
+  />
 </van-cell-group>
+<van-action-sheet show="{{ show }}" bind:close="onClose">
+  <van-picker
+    columns="{{ columns }}"
+    default-index="{{ 0 }}"
+    bind:change="onConfirm"
+    bind:cancel="onClose"
+  />
+</van-action-sheet>
 <van-button 
   class="m8"
   type="primary" 

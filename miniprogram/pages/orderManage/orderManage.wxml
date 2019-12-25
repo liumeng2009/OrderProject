@@ -1,2 +1,40 @@
-<!--pages/orderManage/orderManage.wxml-->
-<text>pages/orderManage/orderManage.wxml</text>
+<van-cell-group title="请选择日期">
+  <van-field
+    value="{{ currentDateStr }}"
+    label="预约时间"
+    icon="calender-o"
+    bind:tap="onDateClick"
+    size="large"
+    disabled
+  />
+</van-cell-group>
+<van-action-sheet show="{{ show }}" bind:close="onClose">
+  <van-datetime-picker
+    type="date"
+    value="{{ currentDate }}"
+    min-date="{{ minDate }}"
+    max-date="{{ maxDate }}"
+    formatter="{{ formatter }}"
+    bind:cancel="onClose"
+    bind:confirm="onDateConfirm"
+  />
+</van-action-sheet>
+
+<block wx:for="{{orders}}"  wx:key="id" wx:for-index="index" wx:for-item="item">
+  <van-cell-group title="{{item.start}} - {{item.end}} 时段" wx:if="{{item.seats.length > 0}}">
+    <van-cell wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
+      <image class="avatar" slot="icon" src="{{itm.avatar}}" />
+      <view slot="title">{{itm.username}}</view>
+      <view slot="right-icon">{{itm.phone}}</view>
+    </van-cell>
+  </van-cell-group>
+</block>
+<view wx:if="{{noOrder}}" style="margin:16rpx;">当天暂无预约</view>
+<van-collapse style="margin-top:16rpx" value="{{ activeName }}" bind:change="onChange" accordion>
+  <van-collapse-item >
+    <van-cell-group>
+
+    </van-cell-group>
+  </van-collapse-item>
+</van-collapse>
+<van-toast id="van-toast" />

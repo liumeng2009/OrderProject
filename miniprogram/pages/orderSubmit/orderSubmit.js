@@ -16,7 +16,33 @@ Page({
     phoneErrorMessage: '',
     date: null,
     start: null,
-    end: null
+    end: null,
+    show: false,
+    columns: [
+      '女',
+      '男'
+    ],
+    currentSex: '女',
+    currentSexIndex: 0,
+  },
+  onSexClick() {
+    this.setData({
+      show: true
+    });
+  },
+  onClose() {
+    this.setData({
+      show: false
+    });
+  },
+  onConfirm(e) {
+    console.log(e.detail);
+    const { value, index } = e.detail;
+    this.setData({
+      currentSex: value,
+      currentSexIndex: index,
+      show: false
+    })
   },
   checkPhone() {
     const phoneReg = /^[1][3,4,5,7,8，9][0-9]{9}$/;
@@ -50,6 +76,7 @@ Page({
     });
   },
   getUserInfo(e) {
+    console.log(e.detail);
     if (this.openid === '') {
       Toast('openid初始化失败');
       return false;
@@ -132,27 +159,28 @@ Page({
               orderTime: moment().toDate(),
               username: this.data.username,
               phone: this.data.phone,
+              sex: this.data.currentSexIndex,
               nickname: e.detail.userInfo.nickName,
               avatar: e.detail.userInfo.avatarUrl,
             }
           }).then(res => {
+            console.log(res);
             this.setData({
               saving: false
             });
-            if (res && res.result && res.result.stats){
-              if (res.result.stats.updated === 1) {
+            if (res && res.result) {
+              if (res.result.code === 1) {
                 Toast('预约成功')
                 setTimeout(() => {
                   wx.navigateBack({
                     delta: 1
                   })
                 }, 500);
-              } else if (res.result.stats.updated === 0){
-                // 返回成功，但是updated=0 认为成位置满了
-                Toast('该时段已经满员，请您选择其他时段.')
+              } else {
+                Toast(res.message ? res.message : '预约失败.');
               }
             } else {
-              Toast('服务器返回格式异常.')
+              Toast('服务器返回格式错误.');
             }
           }).catch(err => {
             console.log(err);
@@ -167,76 +195,6 @@ Page({
           });
           Toast(err.toString())
         })
-        /*
-        const _ = db.command
-        // 检查这个用户是否有生效中的预约
-        console.log(this.data.openid);
-        console.log(moment().toDate());
-        db.collection('orders').where({
-          'timeQuan.seats.username': 'liumeng'
-          // _openid: this.data.openid,
-          // endTime: _.gt(moment().toDate()),
-        }).get().then(res => {
-          if (res.data.length > 0) {
-            // 说明有，不可以重复预约
-            Toast('您已经有预约了，不可以重复预约.');
-            this.setData({
-              saving: false
-            });
-          } else {
-            console.log('检索失败');
-            // 如果没有其他预约，才可以新增
-            // 还需要判断所选择的时间段，是不是满四位了
-            db.collection('orders').where({
-              date: moment(this.data.date).format('YYYY-MM-DD'),
-              start: this.data.start,
-              end: this.data.end
-            }).get().then(res => {
-              if (res && res.data && res.data.length < 4) {
-
-              }
-            }).catch(err => {
-              Toast(err.toString());
-            })
-
-            // 获得时间段的末尾时间
-
-            console.log(endTime);
-            // 把当前用户存进数据库
-            db.collection('orders').add({
-              data: {
-                date: moment(this.data.date).format('YYYY-MM-DD'),
-                start: this.data.start,
-                end: this.data.end,
-                endTime: endTime.toDate(),
-                orderTime: moment().toDate(),
-                status: 1,
-                username: this.data.username,
-                phone: this.data.phone,
-                nickname: e.detail.userInfo.nickName,
-                avatar: e.detail.userInfo.avatarUrl,
-              }
-            }).then(res => {
-              this.setData({
-                saving: false,
-                phone: null,
-                username: null
-              });
-              Toast.success('预约成功');
-            }).catch(err => {
-              this.setData({
-                saving: false
-              });
-              Toast(err.toString());
-            })
-          }
-        }).catch(err => {
-          Toast(err.toString());
-          this.setData({
-            saving: false
-          });
-        })
-        */
       }
     }
   },

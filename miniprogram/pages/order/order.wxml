@@ -10,14 +10,14 @@
 </van-cell-group>
 
 <van-cell-group title="请选择时间段" class="order-list">
-  <van-cell wx:for="{{orders}}" wx:key="id" wx:for-index="index" wx:for-item="item" bind:click="onClick" 
+  <van-cell wx:for="{{orders}}" wx:key="id" wx:for-index="index" wx:for-item="item"     bind:click="onClick" 
     data-id="{{item.id}}"
     data-start="{{item.start}}"
     data-end="{{item.end}}"
     >
     <view slot="title">{{item.start}} - {{item.end}}</view>
     <block wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
-      <van-icon wx:if="{{itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager" color="#07c160" />
+      <van-icon wx:if="{{itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager" color="{{itm.sex === 1 ? '#07c160' : 'red'}}" />
       <van-icon wx:if="{{!itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
     </block>
   </van-cell>

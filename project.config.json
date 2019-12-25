@@ -68,12 +68,20 @@
 					"id": -1,
 					"name": "pages/stats/stats",
 					"pathName": "pages/stats/stats",
+					"query": "",
 					"scene": null
 				},
 				{
 					"id": -1,
 					"name": "pages/order/order",
 					"pathName": "pages/order/order",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/orderManage/orderManage",
+					"pathName": "pages/orderManage/orderManage",
 					"scene": null
 				}
 			]

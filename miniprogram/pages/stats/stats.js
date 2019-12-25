@@ -8,22 +8,16 @@ Page({
     openid: ''
   },
   getOrders() {
-    Toast.loading({
-      mask: true,
-      message: '加载中.'
-    });
     db.collection('orders').where({
       'seats.openid': this.data.openid
     }).get()
     .then(res => {
       console.log(res);
-      Toast.clear();
       wx.stopPullDownRefresh();
       this.setData({
         orders: res.data
       });
     }).catch(err => {
-      Toast.clear();
       wx.stopPullDownRefresh();
       Toast(err.toString());
     });

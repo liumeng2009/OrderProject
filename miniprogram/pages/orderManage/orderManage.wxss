@@ -1,1 +1,9 @@
 /* pages/orderManage/orderManage.wxss */
+.van-field__input--disabled{
+  color: #07c160 !important;
+}
+.avatar{
+  width:42rpx;
+  height:42rpx;
+  margin-right:16rpx;
+}
