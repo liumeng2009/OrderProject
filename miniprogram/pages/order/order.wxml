@@ -16,9 +16,11 @@
     data-end="{{item.end}}"
     >
     <view slot="title">{{item.start}} - {{item.end}}</view>
-    <block wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
-      <van-icon wx:if="{{itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager" color="{{itm.sex === 1 ? '#07c160' : 'red'}}" />
-      <van-icon wx:if="{{!itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
+    <block wx:for="{{item.room}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
+      <block wx:for="{{itm.seats}}" wx:key="id" wx:for-index="idx2" wx:for-item="itm2">
+        <image style="width:48rpx;height:48rpx;" class="m-r-8" wx:if="{{itm2.hasPeople}}" src="{{itm2.sex === 1 ? '../../images/male.png' : '../../images/female.png'}}" />
+        <van-icon wx:if="{{!itm2.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
+      </block>
     </block>
   </van-cell>
 </van-cell-group>

@@ -2,7 +2,7 @@
   <block wx:for="{{orders}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
     <van-cell>
       <view slot="title">
-        {{item.date}} {{item.start}} - {{item.end}} 时段
+        {{item.date}} {{item.start}} - {{item.end}} 时段 房间 {{item.room}}
       </view>
       <van-tag slot="right-icon" type="danger" bind:tap="deleteOrder" 
         data-id="{{item._id}}" data-date="{{item.date}}" 

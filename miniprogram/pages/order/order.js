@@ -30,28 +30,72 @@ Page({
         start: '8:00',
         end: '8:45',
         seatCount: 0,
-        seats: [{}, {}, {}, {}]
+        room: [
+          {
+            seats: [
+              {},{}
+            ]
+          },
+          {
+            seats: [
+              {}, {}
+            ]
+          }
+        ]
       },
       {
         id: 1,
         start: '8:45',
         end: '9:30',
         seatCount: 0,
-        seats: [{}, {}, {}, {}]
+        room: [
+          {
+            seats: [
+              {}, {}
+            ]
+          },
+          {
+            seats: [
+              {}, {}
+            ]
+          }
+        ]
       },
       {
         id: 2,
         start: '9:30',
         end: '10:15',
         seatCount: 0,
-        seats: [{}, {}, {}, {}]
+        room: [
+          {
+            seats: [
+              {}, {}
+            ]
+          },
+          {
+            seats: [
+              {}, {}
+            ]
+          }
+        ]
       },
       {
         id: 3,
         start: '10:15',
         end: '11:00',
         seatCount: 0,
-        seats: [{}, {}, {}, {}]
+        room: [
+          {
+            seats: [
+              {}, {}
+            ]
+          },
+          {
+            seats: [
+              {}, {}
+            ]
+          }
+        ]
       }
     ],
     orders: []
@@ -86,14 +130,17 @@ Page({
         const newOrder = [];
         Object.assign(newOrder, this.data.orders);
         // 将结果存入
+        let idx = 0;
         for(const d of res.data) {
           const order = newOrder.filter(o => o.start === d.start && o.end === d.end);
           if (order.length > 0){
-            order[0].seatCount = d.seats.length;
+            // order[0].seatCount = d.seats.length;
             for(let index = 0; index < d.seats.length ; index ++) {
-              order[0].seats[index].hasPeople = true;
+              order[0].room[idx].seats[index].hasPeople = true;
+              order[0].room[idx].seats[index].sex = d.seats[index].sex;
             }
           }
+          idx++;
         }
         console.log(newOrder);
         console.log(this.data);
@@ -102,6 +149,7 @@ Page({
         });
       }
     }).catch(err => {
+      console.log(err);
       wx.stopPullDownRefresh();
       Toast(err.toString());
     });

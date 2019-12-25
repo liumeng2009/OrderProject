@@ -177,7 +177,7 @@ Page({
                   })
                 }, 500);
               } else {
-                Toast(res.message ? res.message : '预约失败.');
+                Toast(res.result.message ? res.result.message : '预约失败.');
               }
             } else {
               Toast('服务器返回格式错误.');
