@@ -21,13 +21,19 @@
 </van-action-sheet>
 
 <block wx:for="{{orders}}"  wx:key="id" wx:for-index="index" wx:for-item="item">
-  <van-cell-group title="{{item.start}} - {{item.end}} 时段" wx:if="{{item.seats.length > 0}}">
-    <van-cell wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
+  <block wx:for="{{item.room}}"  wx:key="id" wx:for-index="index2" wx:for-item="item2">
+    <van-cell-group title="{{item.start}} - {{item.end}} 时段 治疗室{{index2 + 1}}" wx:if="{{item2.seats.length > 0}}">
+    <van-cell wx:for="{{item2.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
       <image class="avatar" slot="icon" src="{{itm.avatar}}" />
-      <view slot="title">{{itm.username}}</view>
+      <view slot="title">
+        {{itm.username}}
+        <span style="color:blue" wx:if="{{itm.sex}}">(男)</span>
+        <span style="color:red" wx:if="{{!itm.sex}}">(女)</span>
+      </view>
       <view slot="right-icon">{{itm.phone}}</view>
     </van-cell>
-  </van-cell-group>
+    </van-cell-group>
+  </block>
 </block>
 <view wx:if="{{noOrder}}" style="margin:16rpx;">当天暂无预约</view>
 <van-collapse style="margin-top:16rpx" value="{{ activeName }}" bind:change="onChange" accordion>

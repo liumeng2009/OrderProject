@@ -30,29 +30,137 @@ Page({
         id: 0,
         start: '8:00',
         end: '8:45',
-        seatCount: 0,
-        seats: []
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
       },
       {
         id: 1,
         start: '8:45',
         end: '9:30',
-        seatCount: 0,
-        seats: []
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
       },
       {
         id: 2,
         start: '9:30',
         end: '10:15',
-        seatCount: 0,
-        seats: []
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
       },
       {
         id: 3,
         start: '10:15',
         end: '11:00',
-        seatCount: 0,
-        seats: []
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        start: '13:00',
+        end: '13:45',
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
+      },
+      {
+        id: 5,
+        start: '13:45',
+        end: '14:30',
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
+      },
+      {
+        id: 6,
+        start: '14:30',
+        end: '15:15',
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
+      },
+      {
+        id: 7,
+        start: '15:15',
+        end: '16:00',
+        room: [
+          {
+            seats: [
+
+            ]
+          },
+          {
+            seats: [
+
+            ]
+          }
+        ]
       }
     ],
     orders: []
@@ -96,11 +204,16 @@ Page({
           Object.assign(newOrder, this.data.orders);
           // 将结果存入
           for (const d of res.data) {
+            const idx = 0;
+            if (d.room === 'a') {
+              idx = 0;
+            } else {
+              idx = 1;
+            }
             const order = newOrder.filter(o => o.start === d.start && o.end === d.end);
             if (order.length > 0) {
-              order[0].seatCount = d.seats.length;
               for (let index = 0; index < d.seats.length; index++) {
-                order[0].seats.push(d.seats[index]);
+                order[0].room[idx].seats.push(d.seats[index]);
               }
             }
           }

@@ -17,8 +17,11 @@
     >
     <view slot="title">{{item.start}} - {{item.end}}</view>
     <block wx:for="{{item.room}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
+      <span slot="right-icon">房间{{idx + 1}}: </span>
       <block wx:for="{{itm.seats}}" wx:key="id" wx:for-index="idx2" wx:for-item="itm2">
-        <image style="width:48rpx;height:48rpx;" class="m-r-8" wx:if="{{itm2.hasPeople}}" src="{{itm2.sex === 1 ? '../../images/male.png' : '../../images/female.png'}}" />
+        <!--<image style="width:48rpx;height:48rpx;" class="m-r-8" wx:if="{{itm2.hasPeople}}" src="{{itm2.sex === 1 ? '../../images/male.png' : '../../images/female.png'}}" /> -->
+        <van-icon wx:if="{{itm2.hasPeople}}" class="m-r-8 f-s-20" slot="right-icon" name="manager" 
+          color="{{itm2.sex === 1 ? 'blue' : 'red'}}" ></van-icon>
         <van-icon wx:if="{{!itm2.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
       </block>
     </block>
@@ -38,9 +41,21 @@
 </van-action-sheet>
 <van-button 
   wx:if="{{isAdmin}}"
-  icon="orders-o" type="primary" 
+  round
+  icon="setting-o" type="primary" 
   class="float-button"
   bind:tap="onSettingClick"
   >
 </van-button>
+<van-action-sheet show="{{ showSetting }}" bind:close="onSettingClose">
+  <van-picker
+    columns="{{ columns }}"
+    default-index="{{ 0 }}"
+    show-toolbar="true"
+    title="管理员权限"
+    bind:confirm="onSettingConfirm"
+    bind:cancel="onSettingClose"
+  />
+</van-action-sheet>
+
 <van-toast id="van-toast" />

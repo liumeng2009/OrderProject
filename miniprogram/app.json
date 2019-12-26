@@ -3,7 +3,8 @@
     "pages/order/order",
     "pages/orderSubmit/orderSubmit",
     "pages/stats/stats",
-    "pages/orderManage/orderManage"
+    "pages/orderManage/orderManage",
+    "pages/setting/setting"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
