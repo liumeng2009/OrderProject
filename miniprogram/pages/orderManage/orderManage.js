@@ -8,7 +8,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeName: 0,
     show: false,
     minDate: moment('2019-12-01 00:00:00+8:00', "YYYY-MM-DD HH:mm:ss Z").valueOf(),
     maxDate: moment().add(1, 'year').valueOf(),
@@ -218,7 +217,11 @@ Page({
             }
           }
           console.log(newOrder);
-          console.log(this.data);
+          for(const no of newOrder) {
+            no.seatCount = (no.room[0] ? no.room[0].seats.length : 0) + 
+              (no.room[1] ? no.room[1].seats.length : 0);
+          }
+          console.log(newOrder);
           this.setData({
             orders: newOrder,
             noOrder: false

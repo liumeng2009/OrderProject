@@ -82,6 +82,13 @@
 					"id": -1,
 					"name": "pages/orderManage/orderManage",
 					"pathName": "pages/orderManage/orderManage",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/setting/setting",
+					"pathName": "pages/setting/setting",
 					"scene": null
 				}
 			]

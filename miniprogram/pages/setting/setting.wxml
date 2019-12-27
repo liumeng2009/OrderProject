@@ -1,2 +1,16 @@
-<!--pages/setting/setting.wxml-->
-<text>pages/setting/setting.wxml</text>
+
+<van-cell-group title="仪器运行情况设置">
+  <van-cell>
+    <view slot="title">
+      治疗室1的仪器数量
+    </view>
+    <van-stepper slot="right-icon" value="{{ 2 }}" bind:change="onChange" />
+  </van-cell>
+  <van-cell>
+    <view slot="title">
+      治疗室2的仪器数量
+    </view>
+    <van-stepper slot="right-icon" value="{{ 2 }}" bind:change="onChange" />
+  </van-cell>
+</van-cell-group>
+
