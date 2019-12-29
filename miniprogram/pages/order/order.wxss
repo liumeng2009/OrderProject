@@ -18,6 +18,14 @@
 .green{
   color:#07c160;
 }
+.order-list{
+  position:relative;
+}
+.order-list .help{
+  position:absolute;
+  left: 210rpx;
+  top: -44rpx;
+}
 .order-list van-cell{
   margin: 8rpx;
   float:left;

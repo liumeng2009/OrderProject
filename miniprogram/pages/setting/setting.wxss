@@ -1,1 +1,5 @@
-/* pages/setting/setting.wxss */
+.van-cell--center {
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}

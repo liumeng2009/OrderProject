@@ -10,6 +10,8 @@
     "van-toast": "vant-weapp/toast",
     "van-icon": "vant-weapp/icon",
     "van-dialog": "vant-weapp/dialog",
-    "van-picker": "vant-weapp/picker"
+    "van-picker": "vant-weapp/picker",
+    "van-tag": "vant-weapp/tag",
+    "van-popup": "vant-weapp/popup"
   }
 }

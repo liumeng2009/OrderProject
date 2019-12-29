@@ -2,6 +2,8 @@
   "usingComponents": {
     "van-stepper": "vant-weapp/stepper",
     "van-cell": "vant-weapp/cell",
-    "van-cell-group": "vant-weapp/cell-group"
+    "van-cell-group": "vant-weapp/cell-group",
+    "van-dialog": "vant-weapp/dialog",
+    "van-toast": "vant-weapp/toast"
   }
 }
