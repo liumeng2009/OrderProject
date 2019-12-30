@@ -17,6 +17,7 @@ Page({
     date: null,
     start: null,
     end: null,
+    room: null,
     show: false,
     columns: [
       '女',
@@ -141,7 +142,8 @@ Page({
           data: {
             date: moment(this.data.date).format('YYYY-MM-DD'),
             start: this.data.start,
-            end: this.data.end
+            end: this.data.end,
+            room: this.data.room
           }
         }).then(res => {
           // 只要有返回值，就认为初始化完毕
@@ -155,6 +157,7 @@ Page({
               date: moment(this.data.date).format('YYYY-MM-DD'),
               start: this.data.start,
               end: this.data.end,
+              room: this.data.room,
               endTime: endTime.toDate(),
               orderTime: moment().toDate(),
               username: this.data.username,
@@ -209,11 +212,13 @@ Page({
       const id = data.id;
       const start = data.start;
       const end = data.end;
+      const room = data.room;
       this.setData({
         formTitle: moment(date).format('YYYY年MM月DD日') + ' ' + start + '至' + end + '时段',
         date: date,
         start: start,
-        end: end
+        end: end,
+        room: room
       });
     });
     wx.cloud.callFunction({

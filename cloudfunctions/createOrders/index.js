@@ -10,12 +10,13 @@ exports.main = async (event, context) => {
   const date = event.date;
   const start = event.start;
   const end = event.end;
+  const room = event.room;
   // a治疗室是否存在
   const existWithDateA = await db.collection('orders').where({
     date: date,
     start: start,
     end: end,
-    room: 'a'
+    room: room
   }).get();
   if (existWithDateA && existWithDateA.data && existWithDateA.data.length > 0) {
     // 存在
@@ -27,30 +28,7 @@ exports.main = async (event, context) => {
         date: date,
         start: start,
         end: end,
-        room: 'a',
-        seats: [
-
-        ]
-      }
-    });
-  }
-  // b治疗室是否存在
-  const existWithDateB = await db.collection('orders').where({
-    date: date,
-    start: start,
-    end: end,
-    room: 'b'
-  }).get();
-  if (existWithDateB && existWithDateB.data && existWithDateB.data.length > 0) {
-
-  } else {
-    // 不存在，需要新增一条order信息
-    const addOrderA = await db.collection('orders').add({
-      data: {
-        date: date,
-        start: start,
-        end: end,
-        room: 'b',
+        room: room,
         seats: [
 
         ]

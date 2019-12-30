@@ -223,7 +223,7 @@ Page({
       currentRoomStr: e.detail.value,
       showRoomSelector: false,
     })
-    this.getRoomTimeQuantum();
+    this.getTimeQuantum();
   },
   // 绑定时段列表
   /*
@@ -322,7 +322,8 @@ Page({
     }
   },
   getRoomTimeQuantum(roomIndex) {
-    let cloneOrder = JSON.parse(JSON.stringify(this.data.nullRoomDianOrders));
+    const cloneSourceOrder = roomIndex === 1 ? this.data.nullRoomCiOrders : this.data.nullRoomDianOrders
+    let cloneOrder = JSON.parse(JSON.stringify(cloneSourceOrder));
     this.setData({
       orders: cloneOrder
     });
@@ -350,7 +351,6 @@ Page({
           const newOrder = [];
           Object.assign(newOrder, this.data.orders);
           // 将结果存入
-
           for (const d of res.data) {
             const idx = 0;
             const order = newOrder.filter(o => o.start === d.start && o.end === d.end);
@@ -393,7 +393,8 @@ Page({
           date: this.data.currentDate,
           id: id,
           start: start,
-          end: end
+          end: end,
+          room: this.data.currentRoom
         })
       }
     })

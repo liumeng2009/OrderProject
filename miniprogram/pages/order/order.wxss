@@ -26,11 +26,3 @@
   left: 210rpx;
   top: -44rpx;
 }
-.order-list van-cell{
-  margin: 8rpx;
-  float:left;
-  width:100%;
-}
-.order-list van-cell:first-child{
-  margin-top: 0rpx;
-}

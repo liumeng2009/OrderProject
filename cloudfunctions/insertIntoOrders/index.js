@@ -14,6 +14,7 @@ exports.main = async (event, context) => {
   const date = event.date;
   const start = event.start;
   const end = event.end;
+  const room = event.room;
   const endTime = moment(event.endTime).toDate() ;
   const orderTime = moment(event.orderTime).toDate();
 
@@ -29,26 +30,24 @@ exports.main = async (event, context) => {
       message: '您当前有预约，不可以重复进行预约.'
     }
   } else {
+    const seatCountArray = await db.collection('settings').where({
+      settingName: 'roomSeats'
+    }).get();
+    const seatCount = room === 1 ? seatCountArray.data[0].roomSeats[1] : seatCountArray.data[0].roomSeats[0];
+
+    const canInsertSizeArray = [];
+    for(let i = 0; i<seatCount; i++) {
+      canInsertSizeArray.push(_.size(i))
+    }
     // 先进入roomA，如果不行，再进入roomB
     const orderInsertResultA = await db.collection('orders')
     .where({
       date: date,
       start: start,
       end: end,
-      room: 'a',
-      // 第二个元素存在，就不update了
-      'seats.1': _.exists(false),
-      // 插入元素的sex属性和第一个元素的sex属性不一样
-      seats: _.or(
-        _.size(0),
-        _.and([
-          {
-            seats: _.size(1)
-          },{
-            'seats.0.sex': sex
-          }
-        ])
-      )
+      room: room,
+      // 超过一定长度，就失败
+      seats: _.or(canInsertSizeArray),
     })
     .update({
       data: {
@@ -68,63 +67,16 @@ exports.main = async (event, context) => {
     console.log(orderInsertResultA);
     if (orderInsertResultA && orderInsertResultA.stats) {
       if (orderInsertResultA.stats.updated === 1) {
-        // 成功，说明进入roomA成功
+        // 成功，说明进入room成功
         return {
           code: 1,
-          room: 'a',
           message: '预约成功'
         }
       } else {
-        // 不成功，那么尝试进入roomB
-        const orderInsertResultB = await db.collection('orders')
-        .where({
-          date: date,
-          start: start,
-          end: end,
-          room: 'b',
-          // 第二个元素存在，就不update了
-          'seats.1': _.exists(false),
-          // 插入元素的sex属性和第一个元素的sex属性不一样
-          seats: _.or(
-            _.size(0),
-            _.and([
-              {
-                seats: _.size(1)
-              }, {
-                'seats.0.sex': sex
-              }
-            ])
-          )
-        })
-        .update({
-          data: {
-            'seats': _.push([{
-              openid: openid,
-              username: username,
-              phone: phone,
-              sex: sex,
-              nickname: nickname,
-              avatar: avatar,
-              endTime: endTime,
-              orderTime: orderTime,
-              status: 1
-            }])
-          }
-        });
-        if (orderInsertResultB && orderInsertResultB.stats) {
-          if (orderInsertResultB.stats.updated === 1) {
-            return {
-              code: 1,
-              room: 'b',
-              message: '预约成功'
-            }
-          } else {
-            return {
-              code: 0,
-              message: '很抱歉，这个时间段没有合适的位置，请您选择其他时段进行预约.'
-            };
-          }
-        }
+        return {
+          code: 0,
+          message: '很抱歉，这个时间段没有合适的位置，请您选择其他时段进行预约.'
+        };
       }
     } else {
       return {

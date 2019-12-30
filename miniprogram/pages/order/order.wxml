@@ -28,7 +28,7 @@
     <block wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
         <van-icon wx:if="{{itm.hasPeople}}" class="m-r-8 f-s-20" slot="right-icon" name="manager" 
           color="{{itm.sex === 1 ? 'blue' : 'red'}}" ></van-icon>
-        <van-icon wx:if="{{!itm2.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
+        <van-icon wx:if="{{!itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
     </block>
   </van-cell>
 </van-cell-group>
