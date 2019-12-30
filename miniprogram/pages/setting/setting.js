@@ -8,7 +8,7 @@ Page({
    */
   data: {
     minSeat: 0,
-    maxSeat: 2,
+    maxSeat: 5,
     roomSeats: [2 ,2]
   },
   onSeatsChange(e) {

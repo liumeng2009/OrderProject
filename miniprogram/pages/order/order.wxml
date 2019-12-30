@@ -1,4 +1,12 @@
-<van-cell-group title="请选择日期">
+<van-cell-group title="请选择治疗类型及时间">
+  <van-field
+    value="{{ currentRoomStr }}"
+    label="治疗类型"
+    icon="home-o"
+    bind:tap="onRoomClick"
+    size="large"
+    disabled
+  />
   <van-field
     value="{{ currentDateStr }}"
     label="预约时间"
@@ -17,15 +25,10 @@
     data-end="{{item.end}}"
     >
     <view slot="title">{{item.start}} - {{item.end}}</view>
-    <block wx:for="{{item.room}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
-      <span slot="right-icon" class="m-r-8">房间{{idx + 1}}: </span>
-      <block wx:for="{{itm.seats}}" wx:key="id" wx:for-index="idx2" wx:for-item="itm2">
-        <!--<image style="width:48rpx;height:48rpx;" class="m-r-8" wx:if="{{itm2.hasPeople}}" src="{{itm2.sex === 1 ? '../../images/male.png' : '../../images/female.png'}}" /> -->
-        <van-icon wx:if="{{itm2.hasSeat && itm2.hasPeople}}" class="m-r-8 f-s-20" slot="right-icon" name="manager" 
-          color="{{itm2.sex === 1 ? 'blue' : 'red'}}" ></van-icon>
-        <van-icon wx:if="{{itm2.hasSeat && !itm2.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
-        <van-icon wx:if="{{!itm2.hasSeat}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" color="#eee" />
-      </block>
+    <block wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
+        <van-icon wx:if="{{itm.hasPeople}}" class="m-r-8 f-s-20" slot="right-icon" name="manager" 
+          color="{{itm.sex === 1 ? 'blue' : 'red'}}" ></van-icon>
+        <van-icon wx:if="{{!itm2.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
     </block>
   </van-cell>
 </van-cell-group>
@@ -57,6 +60,17 @@
     title="管理员权限"
     bind:confirm="onSettingConfirm"
     bind:cancel="onSettingClose"
+  />
+</van-action-sheet>
+
+<van-action-sheet show="{{ showRoomSelector }}" bind:close="onRoomSelectorClose">
+  <van-picker
+    columns="{{ roomSelectColumns }}"
+    default-index="{{ 0 }}"
+    show-toolbar="true"
+    title="治疗类型"
+    bind:confirm="onRoomSelectorConfirm"
+    bind:cancel="onRoomSelectorgClose"
   />
 </van-action-sheet>
 
