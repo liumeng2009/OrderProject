@@ -1,5 +1,13 @@
 <van-cell-group title="请选择日期">
   <van-field
+    value="{{ currentRoomStr }}"
+    label="治疗类型"
+    icon="home-o"
+    bind:tap="onRoomClick"
+    size="large"
+    disabled
+  />
+  <van-field
     value="{{ currentDateStr }}"
     label="预约时间"
     icon="calender-o"
@@ -21,20 +29,28 @@
 </van-action-sheet>
 
 <block wx:for="{{orders}}"  wx:key="id" wx:for-index="index" wx:for-item="item">
-<van-cell-group title="{{item.start}} - {{item.end}} 时段" wx:if="{{item.seatCount > 0}}">
-  <block wx:for="{{item.room}}"  wx:key="id" wx:for-index="index2" wx:for-item="item2">
-    <van-cell wx:for="{{item2.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
-      <view slot="icon" style="margin-right:16rpx">治疗室{{index2 + 1}}:</view>
+<van-cell-group title="{{item.start}} - {{item.end}} 时段" wx:if="{{item.seats.length > 0}}">
+    <van-cell wx:for="{{item.seats}}" wx:key="id" wx:for-index="idx" wx:for-item="itm">
       <image class="avatar" slot="icon" src="{{itm.avatar}}" />
       <view slot="title">
         {{itm.username}}
         <span style="color:blue" wx:if="{{itm.sex}}">(男)</span>
         <span style="color:red" wx:if="{{!itm.sex}}">(女)</span>
+        <span style="color:red" wx:if="{{itm.warning}}">(治疗位置不够)</span>
       </view>
       <view slot="right-icon">{{itm.phone}}</view>
     </van-cell>  
-  </block>
   </van-cell-group>
 </block>
-<view wx:if="{{noOrder}}" style="margin:32rpx;">当天暂无预约</view>
+<view wx:if="{{noOrder}}" style="margin:32rpx;">当天的{{currentRoomStr}}暂无预约.</view>
 <van-toast id="van-toast" />
+<van-action-sheet show="{{ showRoomSelector }}" bind:close="onRoomSelectorClose">
+  <van-picker
+    columns="{{ roomSelectColumns }}"
+    default-index="{{ 0 }}"
+    show-toolbar="true"
+    title="治疗类型"
+    bind:confirm="onRoomSelectorConfirm"
+    bind:cancel="onRoomSelectorgClose"
+  />
+</van-action-sheet>

@@ -31,7 +31,7 @@
         <van-icon wx:if="{{!itm.hasPeople}}" slot="right-icon" class="m-r-8 f-s-20" name="manager-o" />
     </block>
   </van-cell>
-  <van-cell wx:if="!hasTimeQuantum" title="今日的预约时段已过，您可以选择明天进行预约."></van-cell>
+  <van-cell wx:if="{{!hasTimeQuantum}}" title="今日的预约时段已过，您可以选择明天进行预约."></van-cell>
 </van-cell-group>
 
 <van-action-sheet show="{{ show }}" bind:close="onClose">
@@ -88,10 +88,6 @@
         <van-cell>
       <view slot="title">男士已占位</view>
       <van-icon slot="right-icon" name="manager" color="blue" class="f-s-20"></van-icon>
-    </van-cell>
-        <van-cell>
-      <view slot="title">位置维护中</view>
-      <van-icon slot="right-icon" name="manager-o" color="#eee" class="f-s-20"></van-icon>
     </van-cell>
   </van-cell-group>
 </van-popup>

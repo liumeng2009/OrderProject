@@ -13,13 +13,11 @@ Page({
   },
   onSeatsChange(e) {
     const roomId = e.target.dataset.roomid;
-    const roomStr = roomId === 'a' ? '电仪器治疗室' : '磁仪器治疗室';
     const seatsCount = e.detail;
     Dialog.confirm({
       title: '确认',
-      message: '确定要把' + roomStr + '的治疗位置改为' + seatsCount + '个吗？'
+      message: '确定要把治疗室' + roomId + '的治疗位置改为' + seatsCount + '个吗？'
     }).then(() => {
-      Toast.loading({ forbidClick: true });
       wx.cloud.callFunction({
         name: 'changeRoomSeats',
         data: {
@@ -28,7 +26,7 @@ Page({
         }
       }).then(res => {
         if (res && res.result && res.result.stats && res.result.stats.updated === 1) {
-          Toast.clear();
+          Toast.success('修改成功.')
           if (roomId === 'a') {
             this.setData({
               roomSeats: [seatsCount, this.data.roomSeats[1]]
@@ -39,14 +37,23 @@ Page({
             })
           }
         } else {
-          Toast.clear()
+          Toast.fail('修改失败.');
+          this.setData({
+            roomSeats: this.data.roomSeats
+          });
         }
       }).catch(err => {
         console.log(err);
-        Toast.clear()
+        Toast(err.toString());
+        this.setData({
+          roomSeats: this.data.roomSeats
+        })
       })
     }).catch(() => {
       // on cancel
+      this.setData({
+        roomSeats: this.data.roomSeats
+      })
     });
   },
 

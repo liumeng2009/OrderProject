@@ -227,94 +227,6 @@ Page({
     this.getTimeQuantum();
   },
   // 绑定时段列表
-  /*
-  getTimeQuantum() {
-    // 重新初始化
-    let cloneOrder = JSON.parse(JSON.stringify(this.data.nullOrders));
-    this.setData({
-      orders: cloneOrder
-    });
-    // 获取位置情况
-    db.collection('settings').where({
-      settingName: 'roomSeats'
-    }).get().then(res => {
-      const roomaSeatsCount = res.data[0].roomSeats[0];
-      const roombSeatsCount = res.data[0].roomSeats[1];
-      // 先把无效位置信息存入this.data.order
-      for (const o of this.data.orders) {
-        if (roomaSeatsCount === 0) {
-          o.room[0].seats[0].hasSeat = false;
-          o.room[0].seats[1].hasSeat = false;
-        } else if (roomaSeatsCount === 1) {
-          o.room[0].seats[0].hasSeat = true;
-          o.room[0].seats[1].hasSeat = false;
-        } else {
-          o.room[0].seats[0].hasSeat = true;
-          o.room[0].seats[1].hasSeat = true;
-        }
-        if (roombSeatsCount === 0) {
-          o.room[1].seats[0].hasSeat = false;
-          o.room[1].seats[1].hasSeat = false;
-        } else if (roombSeatsCount === 1) {
-          o.room[1].seats[0].hasSeat = true;
-          o.room[1].seats[1].hasSeat = false;
-        } else {
-          o.room[1].seats[0].hasSeat = true;
-          o.room[1].seats[1].hasSeat = true;
-        }
-      }
-      // 有没有这一天的order信息，没有的话，绑定一个空列表，有的话绑定
-      const dateSelectStr = moment(this.data.currentDate).format('YYYY-MM-DD');
-      db.collection('orders').where({
-        date: dateSelectStr
-      }).get().then(res => {
-        console.log(res);
-        wx.stopPullDownRefresh();
-        if (res && res.data && res.data.length > 0) {
-          // 说明有这一天的数据
-          const newOrder = [];
-          Object.assign(newOrder, this.data.orders);
-          // 将结果存入
-
-          for (const d of res.data) {
-            const idx = 0;
-            if (d.room === 'a') {
-              idx = 0;
-              
-            } else {
-              idx = 1;
-            }
-            const order = newOrder.filter(o => o.start === d.start && o.end === d.end);
-            if (order.length > 0) {
-              for (let index = 0; index < d.seats.length; index++) {
-                if (order[0].room[idx].seats[index].hasSeat) {
-                  order[0].room[idx].seats[index].hasPeople = true;
-                  order[0].room[idx].seats[index].sex = d.seats[index].sex;
-                }
-              }
-            }
-          }
-          console.log(newOrder);
-          console.log(this.data);
-          this.setData({
-            orders: newOrder
-          });
-        } else {
-          this.setData({
-            orders: this.data.orders
-          });
-        }
-      }).catch(err => {
-        console.log(err);
-        wx.stopPullDownRefresh();
-        Toast(err.toString());
-      });
-    }).catch(err => {
-      console.log(err);
-      Toast(err.toString());
-    })
-  },
-  */
   getTimeQuantum() {
     if (this.data.currentRoom === 1) {
       this.getRoomTimeQuantum(1)
@@ -333,7 +245,7 @@ Page({
         useOrder.push(co);
       }
     }
-    let hasTimeQuan;
+    let hasTimeQuan = true;
     if (useOrder.length > 0) {
       hasTimeQuan: true
     } else {
@@ -361,7 +273,6 @@ Page({
         room: roomIndex
       }).get().then(res => {
         console.log(res);
-        wx.stopPullDownRefresh();
         if (res && res.data && res.data.length > 0) {
           // 说明有这一天的数据
           const newOrder = [];
@@ -392,7 +303,6 @@ Page({
         }
       }).catch(err => {
         console.log(err);
-        wx.stopPullDownRefresh();
         Toast(err.toString());
       });
     }).catch(err => {
@@ -534,7 +444,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    this.getTimeQuantum();
+
   },
 
   /**
