@@ -5,13 +5,11 @@
     "van-cell-group": "vant-weapp/cell-group",
     "van-tag": "vant-weapp/tag/",
     "van-loading": "vant-weapp/loading",
-    "van-tab": "vant-weapp/tab",
-    "van-tabs": "vant-weapp/tabs",
-    "van-button": "vant-weapp/button",
     "van-toast": "vant-weapp/toast",
     "van-row": "vant-weapp/row",
     "van-col": "vant-weapp/col",
     "van-checkbox": "vant-weapp/checkbox",
-    "van-dialog": "vant-weapp/dialog"
+    "van-dialog": "vant-weapp/dialog",
+    "van-switch": "vant-weapp/switch"
   }
 }

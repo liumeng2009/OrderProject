@@ -10,6 +10,7 @@ Page({
     show: false,
     showHelp: false,
     showRoomSelector: false,
+    hasTimeQuantum: true,
     minDate: new Date().getTime() + 1000 * 60 * 30,
     maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
     currentDate: new Date().getTime() + 1000 * 60 * 30,
@@ -324,8 +325,23 @@ Page({
   getRoomTimeQuantum(roomIndex) {
     const cloneSourceOrder = roomIndex === 1 ? this.data.nullRoomCiOrders : this.data.nullRoomDianOrders
     let cloneOrder = JSON.parse(JSON.stringify(cloneSourceOrder));
+    const useOrder = [];
+    // 删去超过现在时间的
+    for (let co of cloneOrder) {
+      const coMoment = moment(this.data.currentDateStr + ' ' + co.start + ':00+8.00', 'YYYY年MM月DD日 hh:mm:ss Z');
+      if (moment().diff(coMoment) < 0) {
+        useOrder.push(co);
+      }
+    }
+    let hasTimeQuan;
+    if (useOrder.length > 0) {
+      hasTimeQuan: true
+    } else {
+      hasTimeQuan: false
+    }
     this.setData({
-      orders: cloneOrder
+      orders: useOrder,
+      hasTimeQuantum: hasTimeQuan
     });
     // 获取位置情况
     db.collection('settings').where({
@@ -356,8 +372,11 @@ Page({
             const order = newOrder.filter(o => o.start === d.start && o.end === d.end);
             if (order.length > 0) {
               for (let index = 0; index < d.seats.length; index++) {
-                order[0].seats[index].hasPeople = true;
-                order[0].seats[index].sex = d.seats[index].sex;
+                // 由于是预约，可能会存在先前的预约多，现在机器少了，人数多于位置数的情况，对于用户来说，只看到实际位置数
+                if (order[0].seats[index]) {
+                  order[0].seats[index].hasPeople = true;
+                  order[0].seats[index].sex = d.seats[index].sex;
+                }
               }
             }
           }

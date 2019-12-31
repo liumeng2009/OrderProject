@@ -4,16 +4,39 @@ import Toast from 'vant-weapp/toast/toast';
 import Dialog from 'vant-weapp/dialog/dialog';
 Page({
   data: {
+    checked: false,
     orders: [],
-    openid: ''
+    openid: '',
+    noOrder: false
   },
-  getOrders() {
-    db.collection('orders').where({
-      'seats.openid': this.data.openid
-    }).get()
+  onChange(e) {
+    this.setData({ checked: e.detail });
+    this.getOrders(e.detail);
+  },
+  getOrders(isAll) {
+    const _ = db.command;
+    let whereObj = {};
+    if (isAll) {
+      whereObj = {
+        'seats.openid': this.data.openid
+      }
+    } else {
+      whereObj = {
+        'seats.openid': this.data.openid,
+        'seats.endTime': _.gt(moment().toDate())
+      }
+    }
+    db.collection('orders').where(whereObj).get()
     .then(res => {
       console.log(res);
       wx.stopPullDownRefresh();
+      if (res && res.data && res.data.length > 0) {
+
+      } else {
+        this.setData({
+          noOrder: true
+        })
+      }
       this.setData({
         orders: res.data
       });
@@ -30,7 +53,7 @@ Page({
       this.setData({
         openid: openid
       });
-      this.getOrders();
+      this.getOrders(this.data.checked);
     }).catch(err => {
       Toast(err.toString());
     })
@@ -129,7 +152,7 @@ Page({
    */
   onPullDownRefresh: function () {
     // 加载预约数据
-    this.getOrders();
+    this.getOrders(this.data.checked);
   },
 
   /**

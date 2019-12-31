@@ -1,4 +1,10 @@
 <van-cell-group>
+  <van-cell>
+    <view slot="title">
+      包含过期预约?
+    </view>
+    <van-switch slot="right-icon" size="22px" checked="{{ checked }}" bind:change="onChange" />
+  </van-cell>
   <block wx:for="{{orders}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
     <van-cell>
       <view slot="title">
@@ -16,4 +22,5 @@
 </van-cell-group>
 <van-toast id="van-toast" />
 <van-dialog id="van-dialog" />
+<view wx:if="{{noOrder}}" style="margin:32rpx;">没有预约信息.</view>
 
