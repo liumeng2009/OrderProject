@@ -1,0 +1,6 @@
+/* pages/user/user.wxss */
+.avatar{
+  width:42rpx;
+  height:42rpx;
+  margin-right:16rpx;
+}

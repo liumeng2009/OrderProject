@@ -197,6 +197,7 @@ Page({
     showSetting: false,
     columns: [
       '预约管理',
+      '用户管理',
       '业务设置'
     ],
     roomSelectColumns: [
@@ -246,10 +247,10 @@ Page({
       }
     }
     let hasTimeQuan = true;
-    if (useOrder.length > 0) {
-      hasTimeQuan: true
+    if (useOrder.length === 0) {
+      hasTimeQuan = false
     } else {
-      hasTimeQuan: false
+      hasTimeQuan = true
     }
     this.setData({
       orders: useOrder,
@@ -355,6 +356,11 @@ Page({
         });
         break;
       case 1:
+        wx.navigateTo({
+          url: '../user/user',
+        });
+        break;
+      case 2:
         wx.navigateTo({
           url: '../setting/setting',
         });

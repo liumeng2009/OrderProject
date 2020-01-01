@@ -1,0 +1,10 @@
+<van-cell-group title="管理员申请列表">
+  <van-cell wx:for="{{users}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
+    <image class="avatar" slot="icon" src="{{item.avatar}}" />
+    <view slot="title">
+      {{item.nickname}}
+    </view>
+    <van-checkbox slot="right-icon" value="{{ item.isAdmin }}" bind:change="onChange" data-id="{{item._id}}"></van-checkbox>
+  </van-cell>  
+</van-cell-group>
+<van-toast id="van-toast" />
