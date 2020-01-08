@@ -12,6 +12,17 @@
     <van-stepper slot="right-icon" value="{{ roomSeats[1] }}" min="{{minSeat}}" max="{{maxSeat}}" bind:change="onSeatsChange" data-roomid="b" />
   </van-cell>
 </van-cell-group>
+<van-cell-group title="设置节假日">
+  <van-cell>
+    <calendar mode="normal" 
+      dotDays="{{dots}}" 
+      daysStyle="{{daysStyle}}"
+      bindOnDayClick="onDateClick"
+      bindOnMonthChange="onMonthChange"
+       />
+  </van-cell>
+</van-cell-group>
+{{currentYear}}
 <van-dialog id="van-dialog" />
 <van-toast id="van-toast" />
 

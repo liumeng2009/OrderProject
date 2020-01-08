@@ -1,6 +1,7 @@
 const db = wx.cloud.database();
 import Dialog from 'vant-weapp/dialog/dialog';
 import Toast from 'vant-weapp/toast/toast';
+const moment = require('moment');
 Page({
 
   /**
@@ -9,7 +10,11 @@ Page({
   data: {
     minSeat: 0,
     maxSeat: 5,
-    roomSeats: [2 ,2]
+    roomSeats: [2 ,2],
+    daysStyle: [
+
+    ],
+    currentYear: 2020
   },
   onSeatsChange(e) {
     const roomId = e.target.dataset.roomid;
@@ -71,11 +76,24 @@ Page({
     })
   },
 
+  onDateClick(e) {
+    console.log(e);
+  },
+  onMonthChange(e) {
+    const currentMoment = moment(e.detail);
+    const year = currentMoment.year();
+    this.setData({
+      currentYear:year
+    });
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    this.setData({
+      currentYear: moment().year()
+    })
   },
 
   /**
