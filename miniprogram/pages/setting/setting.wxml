@@ -16,13 +16,12 @@
   <van-cell>
     <calendar mode="normal" 
       dotDays="{{dots}}" 
-      daysStyle="{{daysStyle}}"
+      daysStyle="{{holidays}}"
       bindOnDayClick="onDateClick"
       bindOnMonthChange="onMonthChange"
        />
   </van-cell>
 </van-cell-group>
-{{currentYear}}
 <van-dialog id="van-dialog" />
 <van-toast id="van-toast" />
 

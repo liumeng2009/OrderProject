@@ -11,7 +11,7 @@ Page({
     minSeat: 0,
     maxSeat: 5,
     roomSeats: [2 ,2],
-    daysStyle: [
+    holidays: [
 
     ],
     currentYear: 2020
@@ -78,13 +78,100 @@ Page({
 
   onDateClick(e) {
     console.log(e);
+    // 需要判断出是新增还是删除
+    let exist = true;
+    for(let ho of this.data.holidays) {
+      if (ho.id === e.detail.id) {
+        // 存在
+        exist = false;
+      }
+    }
+    const m = moment(e.detail.date);
+    const year = m.year();
+    const day = m.date();
+    const month = m.month() + 1;
+    console.log(exist);
+    wx.cloud.callFunction({
+      name: 'setHoliday',
+      data: {
+        checked: exist,
+        year: year,
+        month: month,
+        day: day
+      }
+    }).then(res => {
+      console.log(res);
+      if (res && res.result) {
+        if (res.result.code === 1) {
+          // 说明结果成功
+          const holidayClone = [];
+          Object.assign(holidayClone, this.data.holidays);
+          if (res.result.checked) {
+            // 新增成功
+            const obj = {
+              id : e.detail.id,
+              style: 'background-color:#ee0a24;color:#fff;border-radius:100%;'
+            }
+            holidayClone.push(obj);
+          } else {
+            // 删除成功
+            for(let i = 0; i < holidayClone.length; i++) {
+              if (holidayClone[i].id === e.detail.id) {
+                holidayClone.splice(i, 1);
+                break;
+              }
+            }
+          }
+          console.log(holidayClone);
+          this.setData({
+            holidays: holidayClone
+          });
+        } else {
+          // 这种情况一般是是假日要新增，不是假日要删除而造成的，所以自动刷一下数据
+          this.getHolidays();
+        }
+        Toast(res.result.message ? res.result.message : '');
+      } else {
+        toast('服务器返回格式错误.')
+      }
+    }).catch(err => {
+      console.log(err);
+      Toast(err.toString());
+    })
   },
   onMonthChange(e) {
     const currentMoment = moment(e.detail);
     const year = currentMoment.year();
-    this.setData({
-      currentYear:year
-    });
+    if (year !== this.data.currentYear) {
+      this.setData({
+        currentYear: year
+      });
+      this.getHolidays();
+    }
+  },
+  getHolidays() {
+    const _ = db.command;
+    db.collection('holidays').where({
+      year: this.data.currentYear
+    }).get().then(res => {
+      console.log(res);
+      const data = res.data[0].holidays;
+      const holidayArray = [];
+      for(const d of data) {
+         const obj = {
+           id: '' + d.year + '-' + (d.month > 9 ? d.month : ('0' + d.month)) + '-' + (d.day > 9 ? d.day : ('0' + d.day)),
+           style: 'background-color:#ee0a24;color:#fff;border-radius:100%;'
+         };
+         holidayArray.push(obj);
+      }
+      console.log(holidayArray);
+      this.setData({
+        holidays: holidayArray
+      });
+    }).catch(err => {
+      console.log(err);
+      Toast(err.toString());
+    })
   },
 
   /**
@@ -108,6 +195,7 @@ Page({
    */
   onShow: function () {
     this.getRoomSeats();
+    this.getHolidays();
   },
 
   /**
@@ -128,7 +216,8 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.getRoomSeats();
+    this.getHolidays();
   },
 
   /**

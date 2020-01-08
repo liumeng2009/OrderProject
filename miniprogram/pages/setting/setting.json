@@ -1,4 +1,6 @@
 {
+  "navigationBarTitleText": "系统设置",
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "van-stepper": "vant-weapp/stepper",
     "van-cell": "vant-weapp/cell",

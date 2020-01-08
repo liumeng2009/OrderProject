@@ -1,4 +1,5 @@
 {
+  "navigationBarTitleText": "用户管理",
   "usingComponents": {
     "van-cell": "vant-weapp/cell",
     "van-cell-group": "vant-weapp/cell-group",

@@ -1,4 +1,5 @@
 {
+  "navigationBarTitleText": "我的预约",
   "enablePullDownRefresh": true,
   "usingComponents": {
     "van-cell": "vant-weapp/cell",
