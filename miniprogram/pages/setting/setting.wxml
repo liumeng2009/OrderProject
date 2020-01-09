@@ -12,7 +12,8 @@
     <van-stepper slot="right-icon" value="{{ roomSeats[1] }}" min="{{minSeat}}" max="{{maxSeat}}" bind:change="onSeatsChange" data-roomid="b" />
   </van-cell>
 </van-cell-group>
-<van-cell-group title="设置节假日">
+<van-cell-group title="设置节假日" class="cal">
+  <van-icon name="question-o" class="cal-help" color="#07c160" bind:tap="onShowHelp" bind:close="onCloseHelp"></van-icon>
   <van-cell>
     <calendar mode="normal" 
       dotDays="{{dots}}" 
@@ -24,4 +25,12 @@
 </van-cell-group>
 <van-dialog id="van-dialog" />
 <van-toast id="van-toast" />
+<van-popup show="{{ showHelp }}" bind:close="onCloseHelp" custom-style="width:300rpx">
+  <van-cell-group>
+    <van-cell>
+      <view slot="title">节假日</view>
+      <view slot="right-icon" style="width:48rpx;height:48rpx;background-color:#ee0a24;color:#fff;border-radius:100%;text-align:center;">5</view>
+    </van-cell>
+  </van-cell-group>
+</van-popup>
 

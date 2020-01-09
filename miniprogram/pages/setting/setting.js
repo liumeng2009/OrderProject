@@ -14,7 +14,8 @@ Page({
     holidays: [
 
     ],
-    currentYear: 2020
+    currentYear: 2020,
+    showHelp: false
   },
   onSeatsChange(e) {
     const roomId = e.target.dataset.roomid;
@@ -173,7 +174,16 @@ Page({
       Toast(err.toString());
     })
   },
-
+  onShowHelp() {
+    this.setData({
+      showHelp: true
+    });
+  },
+  onCloseHelp() {
+    this.setData({
+      showHelp: false
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */

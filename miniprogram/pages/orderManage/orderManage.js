@@ -14,7 +14,7 @@ Page({
     maxDate: moment().add(1, 'year').valueOf(),
     currentDate: new Date().getTime(),
     currentDateStr: '',
-    currentRoomStr: '电仪器治疗',
+    currentRoomStr: '生物反馈电刺激',
     currentRoom: 0,
     formatter(type, value) {
       if (type === 'year') {
@@ -193,8 +193,8 @@ Page({
     ],
     orders: [],
     roomSelectColumns: [
-      '电仪器治疗',
-      '磁仪器治疗'
+      '生物反馈电刺激',
+      '盆底磁刺激'
     ]
   },
   onChange(event) {

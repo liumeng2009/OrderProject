@@ -15,7 +15,7 @@ Page({
     maxDate: new Date().getTime() + 1000 * 60 * 30 + 1000 * 60 * 60 * 24 *365,
     currentDate: new Date().getTime() + 1000 * 60 * 30,
     currentDateStr: '',
-    currentRoomStr: '电仪器治疗',
+    currentRoomStr: '生物反馈电刺激',
     currentRoom: 0,
     openid: '',
     isAdmin: false,
@@ -201,9 +201,10 @@ Page({
       '业务设置'
     ],
     roomSelectColumns: [
-      '电仪器治疗',
-      '磁仪器治疗'
-    ]
+      '生物反馈电刺激',
+      '盆底磁刺激'
+    ],
+    isHoliday: false
   },
   onDateClick() {
     this.setData({ show: true });
@@ -229,11 +230,40 @@ Page({
   },
   // 绑定时段列表
   getTimeQuantum() {
-    if (this.data.currentRoom === 1) {
-      this.getRoomTimeQuantum(1)
-    } else {
-      this.getRoomTimeQuantum(0)
-    }
+    // 先判断是否是假日
+    const m = moment(this.data.currentDate);
+    const year = m.year();
+    const month = m.month() + 1;
+    const day = m.date();
+    db.collection('holidays').where({
+      year: year,
+      holidays: {
+        year: year,
+        month: month,
+        day: day
+      }
+    }).get().then(res => {
+      console.log(res);
+      if (res && res.data && res.data.length > 0) {
+        // 是假期
+        this.setData({
+          isHoliday: true
+        })
+      } else {
+        this.setData({
+          isHoliday: false
+        })
+      }
+      //然后绑定数据
+      if (this.data.currentRoom === 1) {
+        this.getRoomTimeQuantum(1)
+      } else {
+        this.getRoomTimeQuantum(0)
+      }
+    }).catch(err => {
+      console.log(err);
+      Toast(err.toString());
+    });
   },
   getRoomTimeQuantum(roomIndex) {
     const cloneSourceOrder = roomIndex === 1 ? this.data.nullRoomCiOrders : this.data.nullRoomDianOrders

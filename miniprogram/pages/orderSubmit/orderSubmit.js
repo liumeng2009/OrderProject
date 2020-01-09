@@ -133,70 +133,98 @@ Page({
         }
       } else {
         // 电话也通过了
-        this.setData({
-          saving: true
-        });
-        // 初始化order信息
-        wx.cloud.callFunction({
-          name: 'createOrders',
-          data: {
-            date: moment(this.data.date).format('YYYY-MM-DD'),
-            start: this.data.start,
-            end: this.data.end,
-            room: this.data.room
+        // 检查是不是节假日
+        const m = moment(this.data.date);
+        const year = m.year();
+        const month = m.month() + 1;
+        const day = m.date();
+        db.collection('holidays').where({
+          year: year,
+          holidays: {
+            year: year,
+            month: month,
+            day: day
           }
-        }).then(res => {
-          // 只要有返回值，就认为初始化完毕
-          // 开始插入数据
-          const endTime = moment(moment(this.data.date).format('YYYY-MM-DD') 
-            + ' ' + this.data.end + ':00+8:00', "YYYY-MM-DD HH:mm:ss Z");
-          wx.cloud.callFunction({
-            name: 'insertIntoOrders',
-            data: {
-              openid: this.data.openid,
-              date: moment(this.data.date).format('YYYY-MM-DD'),
-              start: this.data.start,
-              end: this.data.end,
-              room: this.data.room,
-              endTime: endTime.toDate(),
-              orderTime: moment().toDate(),
-              username: this.data.username,
-              phone: this.data.phone,
-              sex: this.data.currentSexIndex,
-              nickname: e.detail.userInfo.nickName,
-              avatar: e.detail.userInfo.avatarUrl,
-            }
-          }).then(res => {
-            console.log(res);
-            this.setData({
-              saving: false
-            });
-            if (res && res.result) {
-              if (res.result.code === 1) {
-                Toast('预约成功')
-                setTimeout(() => {
-                  wx.navigateBack({
-                    delta: 1
-                  })
-                }, 500);
-              } else {
-                Toast(res.result.message ? res.result.message : '预约失败.');
-              }
+        }).get().then(res => {
+          if (res && res.data) {
+            // 说明是假期
+            if (res.data.length > 0) {
+              // 是假期
+              Toast(m.format('YYYY年MM月DD日是节假日，不能预约，请您返回并选择其他日期.'));
             } else {
-              Toast('服务器返回格式错误.');
+              // 不是假期
+              this.setData({
+                saving: true
+              });
+              // 初始化order信息
+              wx.cloud.callFunction({
+                name: 'createOrders',
+                data: {
+                  date: moment(this.data.date).format('YYYY-MM-DD'),
+                  start: this.data.start,
+                  end: this.data.end,
+                  room: this.data.room
+                }
+              }).then(res => {
+                // 只要有返回值，就认为初始化完毕
+                // 开始插入数据
+                const endTime = moment(moment(this.data.date).format('YYYY-MM-DD')
+                  + ' ' + this.data.end + ':00+8:00', "YYYY-MM-DD HH:mm:ss Z");
+                wx.cloud.callFunction({
+                  name: 'insertIntoOrders',
+                  data: {
+                    openid: this.data.openid,
+                    date: moment(this.data.date).format('YYYY-MM-DD'),
+                    start: this.data.start,
+                    end: this.data.end,
+                    room: this.data.room,
+                    endTime: endTime.toDate(),
+                    orderTime: moment().toDate(),
+                    username: this.data.username,
+                    phone: this.data.phone,
+                    sex: this.data.currentSexIndex,
+                    nickname: e.detail.userInfo.nickName,
+                    avatar: e.detail.userInfo.avatarUrl,
+                  }
+                }).then(res => {
+                  console.log(res);
+                  this.setData({
+                    saving: false
+                  });
+                  if (res && res.result) {
+                    if (res.result.code === 1) {
+                      Toast('预约成功')
+                      setTimeout(() => {
+                        wx.navigateBack({
+                          delta: 1
+                        })
+                      }, 500);
+                    } else {
+                      Toast(res.result.message ? res.result.message : '预约失败.');
+                    }
+                  } else {
+                    Toast('服务器返回格式错误.');
+                  }
+                }).catch(err => {
+                  console.log(err);
+                  this.setData({
+                    saving: false
+                  });
+                  Toast(err.toString());
+                })
+              }).catch(err => {
+                this.setData({
+                  saving: false
+                });
+                Toast(err.toString())
+              })
             }
-          }).catch(err => {
-            console.log(err);
-            this.setData({
-              saving: false
-            });
-            Toast(err.toString());
-          })
+          } else {
+            Toast('服务器返回格式错误.')
+          }
         }).catch(err => {
-          this.setData({
-            saving: false
-          });
-          Toast(err.toString())
+          console.log(err);
+          Toast(err.toString());
         })
       }
     }
@@ -214,7 +242,7 @@ Page({
       const end = data.end;
       const room = data.room;
       this.setData({
-        formTitle: moment(date).format('YYYY年MM月DD日') + ' ' + start + '至' + end + '时段',
+        formTitle: moment(date).format('YYYY年MM月DD日') + ' ' + start + '至' + end + '时段的' + (room === 1 ? '盆底磁刺激' : '生物反馈电刺激') + '预约',
         date: date,
         start: start,
         end: end,

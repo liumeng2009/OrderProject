@@ -17,7 +17,7 @@
   />
 </van-cell-group>
 
-<van-cell-group title="请选择时间段" class="order-list">
+<van-cell-group title="请选择时间段" class="order-list" wx:if="{{!isHoliday}}">
   <van-icon name="question-o" class="help" color="#07c160" bind:tap="onShowHelp" bind:close="onCloseHelp"></van-icon>
   <van-cell wx:for="{{orders}}" wx:key="id" wx:for-index="index" wx:for-item="item"     bind:click="onClick" 
     data-id="{{item.id}}"
@@ -33,7 +33,7 @@
   </van-cell>
   <van-cell wx:if="{{!hasTimeQuantum}}" title="今日的预约时段已过，您可以选择明天进行预约."></van-cell>
 </van-cell-group>
-
+<view wx:if="{{isHoliday}}" style="margin:32rpx">{{currentDateStr}}是节假日，不能进行预约哦.</view>
 <van-action-sheet show="{{ show }}" bind:close="onClose">
   <van-datetime-picker
     type="date"

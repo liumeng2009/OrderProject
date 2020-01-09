@@ -7,6 +7,8 @@
     "van-cell-group": "vant-weapp/cell-group",
     "van-dialog": "vant-weapp/dialog",
     "van-toast": "vant-weapp/toast",
-    "calendar": "../../components/calendar/index"
+    "calendar": "../../components/calendar/index",
+    "van-icon": "vant-weapp/icon",
+    "van-popup": "vant-weapp/popup"
   }
 }
