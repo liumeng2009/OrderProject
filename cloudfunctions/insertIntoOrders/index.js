@@ -1,7 +1,9 @@
 // 云函数入口文件
 const cloud = require('wx-server-sdk')
 const moment = require('moment');
-cloud.init()
+cloud.init({
+  env: cloud.DYNAMIC_CURRENT_ENV
+})
 const db = cloud.database();
 // 云函数入口函数
 exports.main = async (event, context) => {
@@ -30,13 +32,14 @@ exports.main = async (event, context) => {
   // 判断是否有有效的预约
   const _ = db.command
   const existOrder = await db.collection('orders').where({
-    'seats.endTime': _.gt(moment().toDate())
+    date: date,
+    'seats.openid': openid
   }).get();
-  if(existOrder && existOrder.data && existOrder.data.length < 0) {
-    // 有预约信息，不可以重复预约
+  if(existOrder && existOrder.data && existOrder.data.length > 0) {
+    // 当天有预约信息，不可以重复预约
     return {
-      code: 1,
-      message: '您当前有预约，不可以重复进行预约.'
+      code: 0,
+      message: '您当天只能预约一次.'
     }
   } 
   const seatCountArray = await db.collection('settings').where({

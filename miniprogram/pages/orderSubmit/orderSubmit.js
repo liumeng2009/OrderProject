@@ -10,9 +10,9 @@ Page({
     formTitle: '预约',
     openid: '',
     saving: false,
-    username: '刘孟',
+    username: '',
     userNameErrorMessage: '',
-    phone: '15822927208',
+    phone: '',
     phoneErrorMessage: '',
     date: null,
     start: null,
@@ -134,17 +134,18 @@ Page({
       } else {
         // 电话也通过了
         // 检查是不是节假日
+        const _ = db.command;
         const m = moment(this.data.date);
         const year = m.year();
         const month = m.month() + 1;
         const day = m.date();
         db.collection('holidays').where({
           year: year,
-          holidays: {
-            year: year,
-            month: month,
-            day: day
-          }
+          holidays: _.elemMatch({
+            year: _.eq(year),
+            month: _.eq(month),
+            day: _.eq(day)
+          })
         }).get().then(res => {
           if (res && res.data) {
             // 说明是假期

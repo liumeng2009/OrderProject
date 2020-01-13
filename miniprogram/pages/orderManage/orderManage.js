@@ -62,32 +62,32 @@ Page({
       },
       {
         id: 4,
-        start: '13:00',
-        end: '13:45',
+        start: '11:00',
+        end: '11:45',
         seats: [
 
         ]
       },
       {
         id: 5,
-        start: '13:45',
-        end: '14:30',
+        start: '14:00',
+        end: '14:45',
         seats: [
 
         ]
       },
       {
         id: 6,
-        start: '14:30',
-        end: '15:15',
+        start: '14:45',
+        end: '15:30',
         seats: [
 
         ]
       },
       {
         id: 7,
-        start: '15:15',
-        end: '16:00',
+        start: '15:30',
+        end: '16:15',
         seats: [
 
         ]
@@ -144,16 +144,16 @@ Page({
       },
       {
         id: 6,
-        start: '13:00',
-        end: '13:30',
+        start: '11:00',
+        end: '11:30',
         seats: [
 
         ]
       },
       {
         id: 7,
-        start: '13:30',
-        end: '14:00',
+        start: '11:30',
+        end: '12:00',
         seats: [
 
         ]

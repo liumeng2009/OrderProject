@@ -26,7 +26,7 @@ Page({
         'seats.endTime': _.gt(moment().toDate())
       }
     }
-    db.collection('orders').where(whereObj).get()
+    db.collection('orders').where(whereObj).orderBy('date', 'desc').get()
     .then(res => {
       console.log(res);
       wx.stopPullDownRefresh();

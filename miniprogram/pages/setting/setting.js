@@ -156,19 +156,21 @@ Page({
       year: this.data.currentYear
     }).get().then(res => {
       console.log(res);
-      const data = res.data[0].holidays;
-      const holidayArray = [];
-      for(const d of data) {
-         const obj = {
-           id: '' + d.year + '-' + (d.month > 9 ? d.month : ('0' + d.month)) + '-' + (d.day > 9 ? d.day : ('0' + d.day)),
-           style: 'background-color:#ee0a24;color:#fff;border-radius:100%;'
-         };
-         holidayArray.push(obj);
+      if(res && res.data && res.data.length > 0) {
+        const data = res.data[0].holidays;
+        const holidayArray = [];
+        for (const d of data) {
+          const obj = {
+            id: '' + d.year + '-' + (d.month > 9 ? d.month : ('0' + d.month)) + '-' + (d.day > 9 ? d.day : ('0' + d.day)),
+            style: 'background-color:#ee0a24;color:#fff;border-radius:100%;'
+          };
+          holidayArray.push(obj);
+        }
+        console.log(holidayArray);
+        this.setData({
+          holidays: holidayArray
+        });
       }
-      console.log(holidayArray);
-      this.setData({
-        holidays: holidayArray
-      });
     }).catch(err => {
       console.log(err);
       Toast(err.toString());
@@ -185,24 +187,31 @@ Page({
     });
   },
   initHoliday() {
-    wx.cloud.callFunction({
-      name: 'initHoliday',
-      data: {
-        year: this.data.currentYear
-      }
-    }).then(res => {
-      console.log(res);
-      if (res && res.result) {
-        if (res.result.code === 1) {
-          this.getHolidays()
+    Dialog.confirm({
+      title: '确认',
+      message: '确定要初始化' + this.data.currentYear + '年的节假日数据吗?如果您设置过本年度的节假日，这个操作会覆盖掉您的数据.'
+    }).then(() => {
+      wx.cloud.callFunction({
+        name: 'initHoliday',
+        data: {
+          year: this.data.currentYear
         }
-        Toast(res.result.message ? res.result.message : '');
-      } else {
-        Toast('服务器返回值错误.');
-      }
+      }).then(res => {
+        console.log(res);
+        if (res && res.result) {
+          if (res.result.code === 1) {
+            this.getHolidays()
+          }
+          Toast(res.result.message ? res.result.message : '');
+        } else {
+          Toast('服务器返回值错误.');
+        }
+      }).catch(err => {
+        console.log(err);
+        Toast(err.toString())
+      })
     }).catch(err => {
-      console.log(err);
-      Toast(err.toString())
+
     })
   },
   /**

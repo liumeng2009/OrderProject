@@ -231,17 +231,18 @@ Page({
   // 绑定时段列表
   getTimeQuantum() {
     // 先判断是否是假日
+    const _ = db.command;
     const m = moment(this.data.currentDate);
     const year = m.year();
     const month = m.month() + 1;
     const day = m.date();
     db.collection('holidays').where({
       year: year,
-      holidays: {
-        year: year,
-        month: month,
-        day: day
-      }
+      holidays: _.elemMatch({
+        year: _.eq(year),
+        month: _.eq(month),
+        day: _.eq(day)
+      })
     }).get().then(res => {
       console.log(res);
       if (res && res.data && res.data.length > 0) {
@@ -253,12 +254,12 @@ Page({
         this.setData({
           isHoliday: false
         })
-      }
-      //然后绑定数据
-      if (this.data.currentRoom === 1) {
-        this.getRoomTimeQuantum(1)
-      } else {
-        this.getRoomTimeQuantum(0)
+        //然后绑定数据
+        if (this.data.currentRoom === 1) {
+          this.getRoomTimeQuantum(1)
+        } else {
+          this.getRoomTimeQuantum(0)
+        }
       }
     }).catch(err => {
       console.log(err);
@@ -438,12 +439,14 @@ Page({
           });
         }
       }).catch(err => {
+        console.log(err);
         Toast(err.toString());
       });
       this.setData({
         openid: openid
       });
     }).catch(err => {
+      console.log(err);
       Toast(err.toString());
     });
   },

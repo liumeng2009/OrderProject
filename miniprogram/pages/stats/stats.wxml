@@ -1,4 +1,7 @@
 <van-cell-group>
+  <van-cell title="显示全部预约">
+    <van-switch checked="{{ checked }}" bind:change="onChange" size="36rpx" />
+  </van-cell>
   <block wx:for="{{orders}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
     <van-cell use-label-slot="true">
       <view slot="title">
