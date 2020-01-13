@@ -14,6 +14,9 @@
 </van-cell-group>
 <van-cell-group title="设置节假日" class="cal">
   <van-icon name="question-o" class="cal-help" color="#07c160" bind:tap="onShowHelp" bind:close="onCloseHelp"></van-icon>
+  <van-cell title="初始化{{currentYear}}年的假期数据" is-link bind:click="initHoliday">
+
+  </van-cell>
   <van-cell>
     <calendar mode="normal" 
       dotDays="{{dots}}" 
@@ -33,4 +36,6 @@
     </van-cell>
   </van-cell-group>
 </van-popup>
+
+{{week}}
 

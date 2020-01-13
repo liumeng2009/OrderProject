@@ -184,6 +184,27 @@ Page({
       showHelp: false
     });
   },
+  initHoliday() {
+    wx.cloud.callFunction({
+      name: 'initHoliday',
+      data: {
+        year: this.data.currentYear
+      }
+    }).then(res => {
+      console.log(res);
+      if (res && res.result) {
+        if (res.result.code === 1) {
+          this.getHolidays()
+        }
+        Toast(res.result.message ? res.result.message : '');
+      } else {
+        Toast('服务器返回值错误.');
+      }
+    }).catch(err => {
+      console.log(err);
+      Toast(err.toString())
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -191,6 +212,7 @@ Page({
     this.setData({
       currentYear: moment().year()
     })
+    console.log(moment('2020-01-01 00:00:00+8:00', 'YYYY-MM-DD HH:mm:ss Z').toDate());
   },
 
   /**

@@ -9,6 +9,7 @@
     "van-toast": "vant-weapp/toast",
     "calendar": "../../components/calendar/index",
     "van-icon": "vant-weapp/icon",
-    "van-popup": "vant-weapp/popup"
+    "van-popup": "vant-weapp/popup",
+    "van-button": "vant-weapp/button"
   }
 }
